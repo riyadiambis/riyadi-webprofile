@@ -16,7 +16,9 @@ Fase roadmap: 5. Dikerjakan setelah tiga fitur konten selesai karena memanggil d
 - Jika data pin kosong, sembunyikan seluruh bagian itu, jangan tampilkan bagian kosong.
 
 ## Teks
-Paragraf perkenalan dan penutup diambil dari tabel `site_texts`, bukan ditulis keras di Blade.
+Paragraf perkenalan dan penutup diambil dari tabel `site_texts`, bukan ditulis keras di Blade. Hanya ada dua kunci di v1: `perkenalan` dan `penutup`.
 
 ## Kriteria lolos
 Menandai pin pada satu project dari panel admin langsung mengubah isi beranda tanpa deploy ulang.
+
+Ditambah smoke test hijau sesuai aturan tetap di `CLAUDE.md`: `/` membalas 200 dalam kedua pilihan bahasa, dan `migrate:fresh --seed` berjalan bersih.

@@ -16,3 +16,5 @@ Fase roadmap: 4
 
 ## Kriteria lolos
 Dua puluh foto percobaan terbuka mulus di HP, grid hanya memuat ukuran kecil, ukuran penuh baru dimuat saat foto dibuka.
+
+Ditambah smoke test hijau sesuai aturan tetap di `CLAUDE.md`: `/galeri` membalas 200, dan `migrate:fresh --seed` berjalan bersih.

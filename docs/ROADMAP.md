@@ -3,9 +3,25 @@
 Dokumen ini mengurutkan pekerjaan. PRD menjawab "apa", roadmap menjawab "kapan dan dengan urutan mana". Setiap fase punya kriteria lolos yang harus dibuktikan sebelum lanjut ke fase berikutnya.
 
 Aturan kerja:
-- Satu fase, satu branch, satu pull request.
+- Satu fase, satu branch, satu pull request. Nama branch `fase-N-nama-singkat`, contoh `fase-1-fondasi`.
 - Jangan mengerjakan fase berikutnya sebelum kriteria lolos fase sekarang terpenuhi dan sudah di-merge.
+- Setiap fase wajib lolos smoke test sesuai aturan tetap di `CLAUDE.md`. Ini sudah dicantumkan di kriteria lolos tiap fase di bawah.
 - Setiap akhir fase, jelaskan ke pemilik apa yang berubah dan keputusan apa yang diambil, dengan bahasa yang bisa dinilai tanpa membaca seluruh kode.
+
+## Pemetaan fase ke berkas fitur
+
+| Fase | Berkas fitur | Branch | PR |
+|---|---|---|---|
+| 0 — Persiapan | tidak ada, dikerjakan pemilik di luar kode | — | — |
+| 1 — Fondasi | `docs/fitur/00-fondasi.md` | `fase-1-fondasi` | 1 |
+| 2 — Journal | `docs/fitur/01-journal.md` | `fase-2-journal` | 1 |
+| 3 — Project | `docs/fitur/02-project.md` | `fase-3-project` | 1 |
+| 4 — Galeri | `docs/fitur/03-galeri.md` | `fase-4-galeri` | 1 |
+| 5 — Beranda | `docs/fitur/04-beranda.md` dan `docs/fitur/05-dwibahasa.md` | `fase-5-beranda` | 1 |
+| 6 — Deploy | `docs/fitur/06-deploy.md` | `fase-6-deploy` | 1 |
+| 7 — Poles | `docs/fitur/07-poles.md` | `fase-7-poles` | 1 |
+
+Fase 5 dilayani dua berkas fitur karena dwibahasa hanya masuk akal dikerjakan bersamaan dengan beranda. Keduanya tetap satu branch dan satu pull request.
 
 ---
 
@@ -29,7 +45,7 @@ Dikerjakan pemilik, bukan AI.
 - Buat berkas token desain (warna, font, ukuran border dan bayangan) sebagai satu sumber kebenaran, bukan nilai yang bertebaran di banyak tempat.
 - Buat layout publik: header, navigasi empat halaman, footer, latar kertas.
 
-**Lolos jika:** halaman kosong dari keempat rute bisa dibuka, panel admin bisa login, dan tampilan sudah memakai token desain.
+**Lolos jika:** halaman kosong dari keempat rute bisa dibuka, panel admin bisa login, dan tampilan sudah memakai token desain. Smoke test membuktikan keempat rute membalas 200 dan `migrate:fresh --seed` berjalan bersih.
 
 ---
 
@@ -42,7 +58,7 @@ Fase paling penting. Kalau fase ini gagal, produk ini tidak ada gunanya.
 - Halaman publik `/journal` dan `/journal/{slug}`, termasuk tombol tautan project di bagian atas.
 - Gambar dalam tulisan bisa diklik untuk diperbesar.
 
-**Lolos jika:** satu artikel percobaan berisi teks, dua gambar, dan satu video YouTube bisa ditulis dari HP lalu tampil benar di halaman publik.
+**Lolos jika:** satu artikel percobaan berisi teks, dua gambar, dan satu video YouTube bisa ditulis dari HP lalu tampil benar di halaman publik. Smoke test membuktikan `/journal` dan `/journal/{slug}` membalas 200 dan `migrate:fresh --seed` berjalan bersih.
 
 ---
 
@@ -53,7 +69,7 @@ Fase paling penting. Kalau fase ini gagal, produk ini tidak ada gunanya.
 - Perilaku pergantian gambar otomatis pada kartu, dengan jeda awal acak dan penghormatan pada `prefers-reduced-motion`.
 - Kartu tanpa tulisan tertaut tidak bisa diklik.
 
-**Lolos jika:** dua project percobaan tampil, gambarnya berganti sendiri tidak serentak, dan klik kartu mendarat di tulisan yang benar.
+**Lolos jika:** dua project percobaan tampil, gambarnya berganti sendiri tidak serentak, dan klik kartu mendarat di tulisan yang benar. Smoke test membuktikan `/project` membalas 200 dan `migrate:fresh --seed` berjalan bersih.
 
 ---
 
@@ -63,7 +79,7 @@ Fase paling penting. Kalau fase ini gagal, produk ini tidak ada gunanya.
 - Halaman `/galeri` dengan grid dan tampilan besar berisi caption, bisa dinavigasi maju mundur.
 - Pemuatan bertahap saat digulir.
 
-**Lolos jika:** dua puluh foto percobaan terbuka mulus di HP tanpa lonjakan pemakaian data yang tidak wajar.
+**Lolos jika:** dua puluh foto percobaan terbuka mulus di HP tanpa lonjakan pemakaian data yang tidak wajar. Smoke test membuktikan `/galeri` membalas 200 dan `migrate:fresh --seed` berjalan bersih.
 
 ---
 
@@ -74,9 +90,9 @@ Dikerjakan terakhir di antara halaman, karena beranda memanggil data dari tiga f
 - Bagian perkenalan dan tautan sosial.
 - Tiga slider: project pilihan, tulisan pilihan, galeri terbaru. Semuanya dari data yang ditandai pin.
 - Tautan "lihat semua" di setiap bagian.
-- Pengalih bahasa ID/EN di header, berlaku untuk teks beranda dan ringkasan project sesuai bagian 7.6 PRD. Isi journal dan galeri tidak ikut berubah.
+- Pengalih bahasa ID/EN di header, berlaku untuk teks beranda dan ringkasan project sesuai bagian 7.6 PRD. Nama project tidak diterjemahkan. Isi journal dan galeri tidak ikut berubah.
 
-**Lolos jika:** menandai pin pada satu project dari panel admin langsung mengubah isi beranda, dan menekan pengalih bahasa mengubah teks perkenalan serta ringkasan project tanpa merusak tata letak.
+**Lolos jika:** menandai pin pada satu project dari panel admin langsung mengubah isi beranda, dan menekan pengalih bahasa mengubah teks perkenalan serta ringkasan project tanpa merusak tata letak. Smoke test membuktikan `/` membalas 200 dalam kedua pilihan bahasa dan `migrate:fresh --seed` berjalan bersih.
 
 ---
 
@@ -88,7 +104,7 @@ Dikerjakan terakhir di antara halaman, karena beranda memanggil data dari tiga f
 - Skrip backup harian untuk berkas SQLite dan direktori storage.
 - Catat langkah deploy ulang di README supaya bisa diulang tanpa mengingat-ingat.
 
-**Lolos jika:** domain dibuka dari jaringan seluler menampilkan situs dengan HTTPS, dan panel admin tidak bisa dibuka dari luar.
+**Lolos jika:** domain dibuka dari jaringan seluler menampilkan situs dengan HTTPS, dan panel admin tidak bisa dibuka dari luar. Seluruh smoke test dari fase sebelumnya tetap hijau di lingkungan pengembangan.
 
 ---
 
@@ -97,9 +113,9 @@ Dikerjakan terakhir di antara halaman, karena beranda memanggil data dari tiga f
 - Meta tag, Open Graph, sitemap, RSS.
 - Halaman 404 yang tidak asal-asalan.
 - Pemeriksaan Lighthouse dan perbaikan yang muncul.
-- Tag untuk journal, jika masih ada tenaga.
+- Tag untuk journal. **Opsional.** Boleh dibuang tanpa menghambat fase ini dinyatakan lolos.
 
-**Lolos jika:** tautan situs dibagikan di WhatsApp menampilkan pratinjau yang rapi, dan skor performa mobile minimal 90.
+**Lolos jika:** tautan situs dibagikan di WhatsApp menampilkan pratinjau yang rapi, skor performa mobile minimal 90, dan seluruh smoke test tetap hijau. Tag tidak masuk hitungan kriteria lolos.
 
 ---
 

@@ -1,6 +1,6 @@
 # Fitur 06 — Deploy dan Operasional
 
-Fase roadmap: 6 dan 7.
+Fase roadmap: 6. Fase pertama yang menyentuh server. Sebelum fase ini, seluruh pekerjaan dilakukan di laptop.
 
 ## Prasyarat dari pemilik
 - Disk container `web-hosting` di Proxmox dinaikkan ke minimal 30 GiB.
@@ -13,12 +13,12 @@ Fase roadmap: 6 dan 7.
 - Cloudflare Tunnel dari container ke domain. Tanpa port forwarding di router.
 - Panel admin dibatasi: hanya lewat jaringan Tailscale atau di belakang Cloudflare Access.
 - Skrip backup harian yang menyalin berkas SQLite dan direktori storage ke lokasi lain di server.
-- Langkah deploy ulang dicatat di README agar bisa diulang tanpa mengingat-ingat.
+- Langkah deploy ulang dicatat di `README.md` agar bisa diulang tanpa mengingat-ingat.
 
-## Poles
-- Meta tag, Open Graph, sitemap, RSS untuk journal.
-- Halaman 404 yang dibuat sungguh-sungguh.
-- Pemeriksaan Lighthouse, target performa mobile minimal 90.
+## Di luar cakupan
+Meta tag, Open Graph, sitemap, RSS, halaman 404, dan Lighthouse. Semuanya masuk Fase 7, lihat `07-poles.md`.
 
 ## Kriteria lolos
-Domain dibuka dari jaringan seluler menampilkan situs dengan HTTPS, panel admin tidak bisa dibuka dari luar, dan tautan situs yang dibagikan di WhatsApp menampilkan pratinjau yang rapi.
+Domain dibuka dari jaringan seluler menampilkan situs dengan HTTPS, panel admin tidak bisa dibuka dari luar, dan aplikasi hidup lagi sendiri setelah container di-restart.
+
+Seluruh smoke test dari fase sebelumnya tetap hijau di lingkungan pengembangan.

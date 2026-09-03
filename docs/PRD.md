@@ -25,7 +25,7 @@ Website ini dibangun untuk menjadi satu alamat tunggal yang bisa dibagikan ke re
 - Multi-penulis. Hanya ada satu akun admin, yaitu pemilik.
 - Terjemahan otomatis untuk isi artikel journal. Journal tetap berbahasa Indonesia di v1.
 
-Catatan soal bahasa: dwibahasa diterapkan terbatas dan manual, hanya pada teks pendek di beranda dan project, dengan pola dua kolom seperti LinkedIn. Rinciannya di bagian 7.6.
+Catatan soal bahasa: dwibahasa diterapkan terbatas dan manual, hanya pada teks pendek di beranda dan ringkasan project, dengan pola dua kolom seperti LinkedIn. Rinciannya di bagian 7.6.
 
 ## 4. Pengguna
 
@@ -41,7 +41,7 @@ Catatan soal bahasa: dwibahasa diterapkan terbatas dan manual, hanya pada teks p
 
 | Lapisan | Pilihan |
 |---|---|
-| Framework | Laravel (versi terbaru, saat ini 13) |
+| Framework | Laravel (versi terbaru) |
 | Panel admin | Filament |
 | Database | SQLite (satu berkas, tanpa server database terpisah) |
 | Styling | Tailwind CSS |
@@ -107,7 +107,8 @@ Server berada di kosan dengan koneksi rumahan. Jika listrik atau internet mati, 
 ### `site_texts` (teks beranda dwibahasa)
 | Kolom | Tipe | Catatan |
 |---|---|---|
-| kunci | string unik | contoh: `perkenalan`, `sapaan`, `penutup` |
+| id | integer | auto-increment, primary key |
+| kunci | string | indeks unik. Hanya dua kunci di v1: `perkenalan` dan `penutup` |
 | nilai_id | text | versi bahasa Indonesia |
 | nilai_en | text, nullable | versi bahasa Inggris |
 
@@ -158,14 +159,14 @@ Grid rapat bergaya Instagram. Foto diklik membuka tampilan besar berisi foto dan
 
 Disediakan Filament. Isi minimal:
 - CRUD posts dengan editor teks kaya, unggah gambar di dalam tulisan, tombol sematan YouTube, pengaturan status draf/terbit dan penanda pin.
-- CRUD projects dengan unggah banyak gambar, pemilihan tulisan yang ditautkan, dan kolom ringkasan Indonesia serta Inggris bersebelahan.
+- CRUD projects dengan unggah banyak gambar, pemilihan tulisan yang ditautkan, dan kolom ringkasan Indonesia serta Inggris bersebelahan. Nama project hanya satu kolom.
 - Pengelolaan teks beranda (`site_texts`) dengan pola dua kolom bahasa yang sama.
 - CRUD photos dengan unggah banyak berkas sekaligus dan pengurutan.
 - Login satu akun.
 
 ### 7.6 Dwibahasa terbatas
 
-Cakupan: teks perkenalan dan penutup di beranda, serta nama dan ringkasan project. Tidak mencakup isi artikel journal dan caption galeri.
+Cakupan: teks perkenalan dan penutup di beranda, serta ringkasan project. Nama project tidak diterjemahkan dan tidak punya kolom `nama_en`. Tidak mencakup isi artikel journal dan caption galeri.
 
 Aturan:
 - Pengisian sepenuhnya manual. Tidak ada terjemahan otomatis, tidak ada panggilan ke layanan penerjemah.
@@ -183,22 +184,9 @@ Aturan:
 
 ## 9. Desain Visual
 
-Turunan dari gaya "Buku Tulis" milik pemilik, disesuaikan agar terbaca dewasa dan profesional.
+Gaya visualnya turunan dari gaya "Buku Tulis" milik pemilik, disesuaikan agar terbaca dewasa dan profesional: latar kertas bertekstur tipis, kartu berbingkai tegas dengan bayangan offset solid tanpa blur, judul berserif, dan aksen kuning yang dipakai sangat irit. Desktop-first, tapi wajib rapi di layar HP.
 
-| Token | Nilai |
-|---|---|
-| paper | #FDFCF8 |
-| grid | #E9E5DC (sangat tipis, kesan tekstur bukan kotak-kotak) |
-| ink | #1C2B3A |
-| ink-soft | #5C6B7A |
-| garis / bayangan | #C9C2B4 |
-| aksen utama | #F2C744 (kuning teredam, dipakai irit) |
-| aksen kedua | #2F7D6E |
-
-- Font judul: Fraunces (500-700). Font isi dan antarmuka: Nunito Sans.
-- Border 1,5px. Bayangan offset solid tanpa blur, 3px. Radius 10-12px.
-- Aksen stabilo hanya untuk satu sampai dua kata per halaman.
-- Lebar konten maksimal 1100px, desktop-first namun wajib rapi di layar HP.
+Seluruh nilai konkretnya — warna, font, ukuran border, radius, bayangan, jarak antar bagian — ada di `docs/design-tokens.md` dan hanya di sana. Berkas itu satu-satunya sumber kebenaran visual. Jangan menyalin nilainya ke dokumen ini atau ke Blade.
 
 ## 10. Kebutuhan Non-Fungsional
 
@@ -215,7 +203,12 @@ Website dianggap selesai jika pemilik bisa, dari HP, membuka panel admin, menuli
 
 ## 12. Pertanyaan Terbuka
 
+Masih terbuka:
+
 1. Nama domain yang diinginkan.
-2. Apakah halaman kontak berdiri sendiri, atau cukup tautan email di beranda.
-3. Berapa project yang siap ditulis journal-nya saat peluncuran.
-4. Apakah CV dalam bentuk PDF perlu bisa diunduh dari beranda.
+2. Berapa project yang siap ditulis journal-nya saat peluncuran.
+
+Sudah diputuskan:
+
+- **Halaman kontak.** Tidak dibuat. Beranda cukup memuat tautan email dan tautan sosial. Formulir kontak masuk daftar setelah v1.
+- **Unduh CV.** Tidak masuk v1. Masuk daftar setelah v1.
