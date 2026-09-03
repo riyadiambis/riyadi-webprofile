@@ -71,3 +71,6 @@ Di akhir setiap fase, tulis ringkasan berisi: apa yang berubah, keputusan apa ya
 - Jangan mengerjakan fitur di luar fase yang sedang berjalan, meskipun terlihat sepele.
 - Jangan menambahkan komentar pengunjung, pendaftaran pengguna, atau terjemahan otomatis. Ketiganya sudah ditolak.
 - Jangan menaruh kredensial atau berkas `.env` ke dalam repositori.
+- Dilarang force-push ke `main` dalam keadaan apa pun tanpa izin pemilik lebih dulu. Ke branch fitur milik sendiri boleh.
+- Jangan mengambil kredensial dari Windows Credential Manager, keyring, atau penyimpanan sistem lain. Kalau butuh autentikasi dan gagal, hentikan pekerjaan dan minta pemilik yang menjalankan perintahnya.
+- Jangan menghapus direktori `.git` atau membubarkan repositori tanpa izin pemilik lebih dulu.
