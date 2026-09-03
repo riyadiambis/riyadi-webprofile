@@ -12,6 +12,8 @@ Fase roadmap: 3
 ## Halaman publik `/project`
 Grid kartu. Setiap kartu berisi gambar, nama, ringkasan, tahun.
 
+Ringkasan di kartu ikut berubah saat pengalih bahasa ditekan, memakai `ringkasan_en` bila terisi dan jatuh kembali ke `ringkasan` bila kosong. Nama project tidak diterjemahkan. Aturan lengkapnya di `05-dwibahasa.md`.
+
 Perilaku pergantian gambar:
 - Kartu dengan lebih dari satu gambar menampilkan gambarnya bergantian otomatis, transisi lembut, jeda sekitar 3 detik.
 - Jeda awal tiap kartu diberi selisih acak supaya tidak berganti serentak.
@@ -24,3 +26,5 @@ Perilaku klik:
 
 ## Kriteria lolos
 Dua project percobaan tampil, gambarnya berganti sendiri dan tidak serentak, dan klik kartu mendarat di tulisan yang benar.
+
+Ditambah smoke test hijau sesuai aturan tetap di `CLAUDE.md`: `/project` membalas 200, dan `migrate:fresh --seed` berjalan bersih.

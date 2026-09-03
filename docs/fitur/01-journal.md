@@ -28,3 +28,5 @@ Pemilik bisa menulis artikel lengkap dari HP tanpa membuka VS Code, lalu artikel
 
 ## Kriteria lolos
 Satu artikel percobaan berisi teks, dua gambar, dan satu video YouTube ditulis dari HP, diterbitkan, lalu tampil benar di halaman publik termasuk video yang bisa diputar.
+
+Ditambah smoke test hijau sesuai aturan tetap di `CLAUDE.md`: `/journal` dan `/journal/{slug}` membalas 200, dan `migrate:fresh --seed` berjalan bersih.
