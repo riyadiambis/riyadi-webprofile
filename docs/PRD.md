@@ -75,12 +75,12 @@ Server berada di kosan dengan koneksi rumahan. Jika listrik atau internet mati, 
 | slug | string unik | dari judul, bisa diedit manual |
 | ringkasan | text | dipakai di kartu daftar dan meta description |
 | konten | longtext | HTML hasil editor |
-| cover | string | path gambar |
+| cover | string, nullable | path gambar. Boleh kosong supaya draf bisa disimpan sebelum sampul disiapkan |
 | tautan_project | string, nullable | ditampilkan sebagai tombol di paling atas tulisan |
 | label_tautan | string, nullable | contoh: "Lihat repo", "Coba demo" |
 | status | enum | draf / terbit |
 | dipin | boolean | tampil di beranda |
-| terbit_pada | datetime | |
+| terbit_pada | datetime, nullable | kosong selama status masih draf |
 
 ### `projects`
 | Kolom | Tipe | Catatan |

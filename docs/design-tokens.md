@@ -1,6 +1,6 @@
 # Design Tokens
 
-Turunan gaya "Buku Tulis" milik pemilik, disesuaikan agar terbaca dewasa dan profesional. Seluruh nilai di bawah ini adalah satu-satunya sumber kebenaran visual. Daftarkan ke `tailwind.config.js`, jangan tulis ulang di Blade.
+Turunan gaya "Buku Tulis" milik pemilik, disesuaikan agar terbaca dewasa dan profesional. Seluruh nilai di bawah ini adalah satu-satunya sumber kebenaran visual. Daftarkan ke `resources/css/app.css` di dalam blok `@theme`, jangan tulis ulang di Blade. Tailwind v4 memakai konfigurasi berbasis CSS, bukan `tailwind.config.js`.
 
 ## Warna
 

@@ -1,0 +1,123 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/*
+ | Token desain — turunan langsung dari docs/design-tokens.md.
+ | Berkas itu satu-satunya sumber kebenaran visual. Kalau nilainya
+ | berubah di sana, ubah di sini juga. Dilarang menulis nilai mentah
+ | di Blade; pakai utility yang lahir dari token di bawah.
+ */
+@theme {
+    /* Warna */
+    --color-paper: #FDFCF8;
+    --color-grid: #E9E5DC;
+    --color-ink: #1C2B3A;
+    --color-ink-soft: #5C6B7A;
+    --color-card: #FFFFFF;
+    --color-line: #C9C2B4;
+    --color-accent: #F2C744;
+    --color-accent-alt: #2F7D6E;
+    --color-danger: #C0483A;
+
+    /* Tipografi */
+    --font-judul: 'Fraunces', ui-serif, Georgia, serif;
+    --font-isi: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-isi);
+    --text-label: 13px;
+    --tracking-label: 1.2px;
+
+    /* Bentuk */
+    --radius-kartu: 12px;
+    --radius-kecil: 10px;
+    --lebar-garis: 1.5px;
+
+    /* Bayangan offset solid tanpa blur */
+    --shadow-offset: 3px 3px 0 var(--color-line);
+    --shadow-offset-tekan: 1px 1px 0 var(--color-line);
+
+    /* Tata letak */
+    --container-konten: 1100px;
+    --container-baca: 70ch;
+    --spacing-bagian: 96px;
+    --spacing-bagian-hp: 56px;
+
+    /* Tekstur kertas dan aksen stabilo */
+    --ukuran-tekstur: 32px;
+    --opasitas-tekstur: 40%;
+    --stabilo-mulai: 58%;
+}
+
+/* Garis 1,5px. Warnanya ditentukan terpisah lewat border-ink dan kawan-kawan. */
+@utility border-tegas {
+    border-style: solid;
+    border-width: var(--lebar-garis);
+}
+
+@utility border-b-tegas {
+    border-bottom-style: solid;
+    border-bottom-width: var(--lebar-garis);
+}
+
+@utility border-t-tegas {
+    border-top-style: solid;
+    border-top-width: var(--lebar-garis);
+}
+
+/*
+ | Latar kertas. Geometrinya struktur, warnanya tetap dari token grid,
+ | dilemahkan lewat color-mix supaya terbaca sebagai tekstur, bukan
+ | buku kotak-kotak.
+ */
+@utility bg-kertas {
+    background-color: var(--color-paper);
+    background-image:
+        repeating-linear-gradient(
+            to right,
+            color-mix(in srgb, var(--color-grid) var(--opasitas-tekstur), transparent) 0 1px,
+            transparent 1px var(--ukuran-tekstur)
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--color-grid) var(--opasitas-tekstur), transparent) 0 1px,
+            transparent 1px var(--ukuran-tekstur)
+        );
+}
+
+/* Aksen stabilo. Irit, satu sampai dua kata per halaman. */
+@utility stabilo {
+    background-image: linear-gradient(
+        transparent var(--stabilo-mulai),
+        var(--color-accent) var(--stabilo-mulai)
+    );
+}
+
+/* Label bagian: huruf besar, renggang, kecil, warna sekunder. */
+@utility label-bagian {
+    font-size: var(--text-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+}
+
+/* Interaksi tekan: elemen bergeser ke arah bayangan, bayangan mengecil. */
+@utility tekan {
+    transition:
+        transform 120ms ease,
+        box-shadow 120ms ease;
+
+    &:active {
+        transform: translate(2px, 2px);
+        box-shadow: var(--shadow-offset-tekan);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}

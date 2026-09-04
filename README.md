@@ -25,7 +25,54 @@ Kebutuhan:
 
 ## Menjalankan secara lokal
 
-Diisi pada Fase 1, setelah Laravel terpasang.
+Seluruh perintah dijalankan dari akar project, yaitu folder `webProfilRiyadi`,
+bukan dari folder induk.
+
+Catatan Windows: `composer` hanya terdaftar di PATH PowerShell, tidak terlihat
+dari Git Bash. Jalankan perintah `composer` lewat PowerShell.
+
+Penyiapan pertama kali:
+
+```powershell
+composer install
+npm install
+Copy-Item .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
+npm run build
+```
+
+Menjalankan:
+
+```powershell
+php artisan serve
+```
+
+Situs terbuka di http://127.0.0.1:8000 dan panel admin di
+http://127.0.0.1:8000/admin. Akun admin dibuat oleh seeder dari nilai
+`ADMIN_EMAIL` dan `ADMIN_PASSWORD` di `.env`.
+
+Kalau port 8000 sudah dipakai project lain di mesin yang sama, pilih port lain
+dengan `php artisan serve --port=8347`. Server bawaan PHP di Windows tidak
+selalu menolak port yang sudah terpakai, jadi permintaanmu bisa dijawab
+aplikasi tetangga tanpa pesan galat apa pun. Kalau halaman terasa asing,
+periksa dulu port dan proses yang sedang berjalan.
+
+Saat menggarap tampilan, jalankan Vite supaya perubahan langsung terlihat:
+
+```powershell
+npm run dev
+```
+
+## Menjalankan test
+
+```powershell
+php artisan test
+```
+
+Smoke test saja: rute publik membalas 200 dan `migrate:fresh --seed` berjalan
+bersih. Aturan lengkapnya ada di [CLAUDE.md](CLAUDE.md). Test memakai SQLite
+di memori, jadi tidak pernah menyentuh `database/database.sqlite`.
 
 ## Alur kerja
 
