@@ -9,8 +9,17 @@
         Project
     </h1>
 
-    <p class="mt-6 max-w-baca text-ink-soft">
-        Grid kartu project dikerjakan di Fase 3, lengkap dengan pergantian
-        gambar otomatis yang tidak serentak antar kartu.
+    <p class="mt-4 max-w-baca text-ink-soft">
+        Beberapa hal yang pernah dikerjakan, dari kuliah, riset, sampai project pribadi.
     </p>
+
+    @if ($projects->isEmpty())
+        <p class="mt-10 text-ink-soft">Belum ada project yang ditambahkan.</p>
+    @else
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($projects as $project)
+                <x-kartu-project :project="$project" />
+            @endforeach
+        </div>
+    @endif
 @endsection

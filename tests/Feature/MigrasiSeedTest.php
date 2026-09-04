@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Post;
+use App\Models\Project;
 use App\Models\SiteText;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
@@ -24,4 +25,5 @@ it('menjalankan migrate:fresh --seed sampai bersih dari nol', function () {
     expect(User::count())->toBe(1);
     expect(SiteText::count())->toBe(2);
     expect(Post::count())->toBe(2);
+    expect(Project::count())->toBe(2);
 });

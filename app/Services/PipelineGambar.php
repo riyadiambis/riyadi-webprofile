@@ -30,9 +30,10 @@ use RuntimeException;
 class PipelineGambar
 {
     /**
+     * @param  string|null  $direktori  Sub-direktori dasar di dalam disk `public`, mis. 'journal' atau 'project'. Kosong berarti jatuh ke config('media.direktori').
      * @return array<string, string> path relatif tiap turunan di disk `public`, berkunci thumb/sedang/penuh
      */
-    public function proses(UploadedFile $berkas): array
+    public function proses(UploadedFile $berkas, ?string $direktori = null): array
     {
         $batasKb = config('media.batas_unggah_kb');
 
@@ -48,7 +49,8 @@ class PipelineGambar
         }
 
         $sumber = $this->pastikanTrueColor($sumber);
-        $direktori = config('media.direktori').'/'.(string) Str::uuid();
+        $direktoriDasar = $direktori ?? config('media.direktori');
+        $direktori = $direktoriDasar.'/'.(string) Str::uuid();
 
         Storage::disk(config('media.disk'))->makeDirectory($direktori);
 
