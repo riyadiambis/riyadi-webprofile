@@ -14,14 +14,15 @@ Aturan kerja:
 |---|---|---|---|
 | 0 — Persiapan | tidak ada, dikerjakan pemilik di luar kode | — | — |
 | 1 — Fondasi | `docs/fitur/00-fondasi.md` | `fase-1-fondasi` | 1 |
-| 2 — Journal | `docs/fitur/01-journal.md` | `fase-2-journal` | 1 |
+| 2A — Journal, panel admin | `docs/fitur/01a-journal-admin.md` | `fase-2a-journal-admin` | 1 |
+| 2B — Journal, halaman publik | `docs/fitur/01b-journal-publik.md` | `fase-2b-journal-publik` | 1 |
 | 3 — Project | `docs/fitur/02-project.md` | `fase-3-project` | 1 |
 | 4 — Galeri | `docs/fitur/03-galeri.md` | `fase-4-galeri` | 1 |
 | 5 — Beranda | `docs/fitur/04-beranda.md` dan `docs/fitur/05-dwibahasa.md` | `fase-5-beranda` | 1 |
 | 6 — Deploy | `docs/fitur/06-deploy.md` | `fase-6-deploy` | 1 |
 | 7 — Poles | `docs/fitur/07-poles.md` | `fase-7-poles` | 1 |
 
-Fase 5 dilayani dua berkas fitur karena dwibahasa hanya masuk akal dikerjakan bersamaan dengan beranda. Keduanya tetap satu branch dan satu pull request.
+Fase 2 dipecah jadi 2A dan 2B karena cakupannya terlalu besar untuk satu sesi kerja: 2A menutup panel admin dan pipeline media, 2B menutup halaman publik. 2B baru dikerjakan setelah 2A selesai dan ter-merge. Fase 5 dilayani dua berkas fitur karena dwibahasa hanya masuk akal dikerjakan bersamaan dengan beranda. Keduanya tetap satu branch dan satu pull request.
 
 ---
 
@@ -49,16 +50,24 @@ Dikerjakan pemilik, bukan AI.
 
 ---
 
-## Fase 2 — Journal dan panel penulisan
+## Fase 2A — Journal, panel admin dan pipeline media
 
-Fase paling penting. Kalau fase ini gagal, produk ini tidak ada gunanya.
+Fase paling penting bersama 2B. Kalau kedua fase ini gagal, produk ini tidak ada gunanya.
 
 - Resource Filament untuk `posts`: editor teks kaya, unggah gambar di tengah tulisan, sematan YouTube, status draf/terbit, penanda pin.
 - Pipeline media: kompres, konversi WebP, tiga ukuran turunan.
+
+**Lolos jika:** satu artikel percobaan berisi teks, dua gambar, dan satu tautan YouTube bisa ditulis dari HP, disimpan sebagai draf dan sebagai terbit. Tiga berkas turunan WebP benar-benar ada di storage untuk tiap gambar. Smoke test membuktikan `migrate:fresh --seed` berjalan bersih.
+
+---
+
+## Fase 2B — Journal, halaman publik
+
 - Halaman publik `/journal` dan `/journal/{slug}`, termasuk tombol tautan project di bagian atas.
+- Sematan YouTube dari Fase 2A dirender sebagai iframe yang bisa diputar.
 - Gambar dalam tulisan bisa diklik untuk diperbesar.
 
-**Lolos jika:** satu artikel percobaan berisi teks, dua gambar, dan satu video YouTube bisa ditulis dari HP lalu tampil benar di halaman publik. Smoke test membuktikan `/journal` dan `/journal/{slug}` membalas 200 dan `migrate:fresh --seed` berjalan bersih.
+**Lolos jika:** artikel percobaan dari Fase 2A tampil benar di halaman publik, termasuk video yang bisa diputar. Smoke test membuktikan `/journal` dan `/journal/{slug}` membalas 200 dan `migrate:fresh --seed` berjalan bersih.
 
 ---
 

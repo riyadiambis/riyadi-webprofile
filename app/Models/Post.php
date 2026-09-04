@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -40,5 +41,15 @@ class Post extends Model
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
+    }
+
+    /**
+     * Hanya tulisan berstatus terbit. Draf tidak boleh bisa diakses lewat
+     * URL publik, jadi halaman publik (Fase 2B) wajib menyaring lewat
+     * scope ini di query, bukan menyembunyikannya di tampilan saja.
+     */
+    public function scopeTerbit(Builder $query): Builder
+    {
+        return $query->where('status', 'terbit');
     }
 }
