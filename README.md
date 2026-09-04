@@ -12,6 +12,7 @@ Baca dulu sebelum menyentuh kode. Urutan wewenangnya dijelaskan di [CLAUDE.md](C
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Urutan fase, kriteria lolos, pemetaan fase ke berkas fitur |
 | [docs/design-tokens.md](docs/design-tokens.md) | Seluruh nilai visual. Satu-satunya sumber kebenaran warna dan tipografi |
 | [docs/fitur/](docs/fitur/) | Spesifikasi rinci per fitur, satu berkas per fase |
+| [docs/keputusan.md](docs/keputusan.md) | Keputusan teknis yang tidak tercatat di PRD/ROADMAP, beserta alasan dan konsekuensinya |
 
 ## Lingkungan pengembangan
 
@@ -63,6 +64,15 @@ Saat menggarap tampilan, jalankan Vite supaya perubahan langsung terlihat:
 ```powershell
 npm run dev
 ```
+
+Kalau panel `/admin` tampil polos tanpa gaya atau interaksi (biasanya setelah
+`git clone` atau `git pull` yang membawa perubahan aset), jalankan:
+
+```powershell
+php artisan filament:assets
+```
+
+Alasannya dan jebakannya dicatat di [docs/keputusan.md](docs/keputusan.md).
 
 ## Menjalankan test
 
