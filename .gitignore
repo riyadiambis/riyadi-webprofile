@@ -19,6 +19,11 @@
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
+
+# ── Aset Filament, dibuat ulang otomatis oleh filament:upgrade ─
+/public/css/filament
+/public/js/filament
+/public/fonts/filament
 /storage/*.key
 /storage/pail
 /vendor
