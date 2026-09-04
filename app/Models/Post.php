@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Tulisan journal.
@@ -51,5 +52,14 @@ class Post extends Model
     public function scopeTerbit(Builder $query): Builder
     {
         return $query->where('status', 'terbit');
+    }
+
+    /**
+     * URL turunan thumb sampul, dipakai kartu daftar journal. `cover`
+     * menyimpan path thumb secara langsung, lihat PipelineGambar.
+     */
+    public function sampulUrl(): ?string
+    {
+        return $this->cover ? Storage::disk('public')->url($this->cover) : null;
     }
 }

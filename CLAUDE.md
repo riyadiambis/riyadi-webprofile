@@ -58,6 +58,8 @@ Pakai Pest, dan hanya sebagai smoke test. Aturan tetap yang berlaku di setiap fa
 
 Tujuannya menangkap kerusakan besar, bukan mengejar cakupan. Kalau sebuah test mulai menguji detail perilaku, hapus test itu.
 
+**Pengecualian tunggal:** `tests/Feature/SanitasiKontenTest.php`, dibuat di Fase 2B atas permintaan eksplisit pemilik. Sanitizer HTML adalah satu-satunya bagian proyek ini yang kalau salah, akibatnya keamanan (XSS), dan itu tidak kelihatan lewat pemeriksaan visual di browser seperti bug lain. Jangan jadikan ini alasan untuk mulai menulis unit test di tempat lain — kalau ada kebutuhan serupa di fase mendatang, tanyakan dulu ke pemilik sebelum menambah test di luar smoke test.
+
 ## Alur kerja
 
 Satu fase roadmap sama dengan satu branch dan satu pull request. Nama branch: `fase-N-nama-singkat`, contoh `fase-1-fondasi`.
