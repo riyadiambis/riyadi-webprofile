@@ -113,6 +113,101 @@
     }
 }
 
+/*
+ | Tipografi isi tulisan journal. @tailwindcss/typography tidak
+ | dipasang — ini pengganti tulisan tangan yang lebih kecil, dan tetap
+ | murni memakai token di atas, tanpa nilai mentah.
+ */
+.konten :where(h2, h3) {
+    font-family: var(--font-judul);
+    font-weight: 600;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    line-height: 1.3;
+}
+
+.konten :where(h2) {
+    font-size: 1.5em;
+}
+
+.konten :where(h3) {
+    font-size: 1.25em;
+}
+
+.konten :where(p) {
+    margin-bottom: 1.25em;
+    line-height: 1.75;
+}
+
+.konten :where(ul, ol) {
+    margin: 1.25em 0;
+    padding-left: 1.5em;
+}
+
+.konten :where(ul) {
+    list-style-type: disc;
+}
+
+.konten :where(ol) {
+    list-style-type: decimal;
+}
+
+.konten :where(li) {
+    margin-bottom: 0.5em;
+}
+
+.konten :where(blockquote) {
+    border-left: var(--lebar-garis) solid var(--color-ink);
+    padding-left: 1em;
+    font-style: italic;
+    color: var(--color-ink-soft);
+    margin: 1.5em 0;
+}
+
+.konten :where(pre) {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: 1em;
+    border-radius: var(--radius-kecil);
+    overflow-x: auto;
+    margin: 1.5em 0;
+    font-size: 0.9em;
+}
+
+.konten :where(code) {
+    font-family: ui-monospace, 'SFMono-Regular', monospace;
+    font-size: 0.9em;
+}
+
+.konten :where(pre code) {
+    background: transparent;
+    padding: 0;
+}
+
+.konten :where(a) {
+    color: var(--color-accent-alt);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.konten :where(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.9em;
+}
+
+.konten :where(th, td) {
+    border: var(--lebar-garis) solid var(--color-line);
+    padding: 0.5em 0.75em;
+    text-align: left;
+}
+
+.konten :where(th) {
+    background: var(--color-grid);
+    font-weight: 600;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
