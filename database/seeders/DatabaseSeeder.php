@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             SiteTextSeeder::class,
             PostSeeder::class,
+            ProjectSeeder::class,
         ]);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Services\TurunanGambar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Tulisan journal.
@@ -60,6 +60,18 @@ class Post extends Model
      */
     public function sampulUrl(): ?string
     {
-        return $this->cover ? Storage::disk('public')->url($this->cover) : null;
+        return $this->sampulUrls()['thumb'] ?? null;
+    }
+
+    /**
+     * Ketiga turunan sampul sekaligus (thumb/sedang/penuh), diturunkan
+     * dari path yang tersimpan lewat TurunanGambar. sampulUrl() di atas
+     * tinggal mengambil satu darinya, supaya logikanya satu tempat.
+     *
+     * @return array<string, string>|null
+     */
+    public function sampulUrls(): ?array
+    {
+        return $this->cover ? TurunanGambar::urlDari($this->cover) : null;
     }
 }

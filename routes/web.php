@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\JournalController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::view('/', 'beranda')->name('beranda');
-Route::view('/project', 'project')->name('project');
+Route::get('/project', [ProjectController::class, 'index'])->name('project');
 Route::get('/journal', [JournalController::class, 'index'])->name('journal');
 Route::get('/journal/{slug}', [JournalController::class, 'tulisan'])->name('journal.tulisan');
 Route::view('/galeri', 'galeri')->name('galeri');
