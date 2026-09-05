@@ -45,3 +45,13 @@ php artisan filament:assets
 **Kenapa.** Keputusan pemilik: kalau yang tersimpan path thumb, kode lain tergoda menebak turunan penuh lewat manipulasi string (`str_replace('thumb.webp', 'penuh.webp')`) — kebalikan dari alasan TurunanGambar dibuat. Dengan basis nama, tidak ada turunan tertentu yang "tersimpan", jadi tidak ada turunan lain yang bisa ditebak.
 
 **Konsekuensi yang diterima.** Kolom berisi direktori, bukan berkas, sehingga pratinjau native FileUpload Filament tidak bisa membacanya langsung. Formulir unggah (halaman Create dan aksi unggah massal) menyimpan path thumb sebagai nilai formulir sementara demi pratinjau, lalu mengubahnya jadi basis nama lewat `TurunanGambar::basisDari()` saat menulis ke basis data. Kolom gambar di tabel admin membaca URL thumb lewat `Photo::gambarUrls()`. Kalau nanti ada kebutuhan serupa di berkas lain, jangan tulis versi kedua — pakai TurunanGambar.
+
+## Lightbox tiga baris, gambar selalu muat utuh, tanpa scroll di dalam (perbaikan pasca-Fase 4)
+
+**Keputusan.** Overlay lightbox disusun tiga baris vertikal: baris atas tombol tutup, baris tengah area gambar dengan gutter kiri-kanan untuk tombol maju/mundur, baris bawah caption dan tautan "Buka ukuran penuh" yang membuka berkas penuh di tab baru. Gambar di tengah dibatasi tinggi dan lebar sekaligus — sebatas sisa baris tengah — dan ditampilkan dengan `object-contain`. Tidak ada scroll di dalam overlay, dan kunci scroll halaman saat lightbox terbuka tetap dipertahankan seperti sebelumnya.
+
+**Kenapa.** Susunan lama membiarkan foto potret lebih tinggi dari jendela: `max-height` pada gambar tidak meresolusi karena induknya bertinggi otomatis, bagian bawah terpotong, dan karena scroll halaman terkunci tidak ada cara melihat sisanya — caption ikut terdorong ke bawah layar. Dengan tiga baris, tinggi maksimum gambar adalah sisa area tengah setelah baris atas dan bawah mendapat tempatnya, dihitung oleh flexbox tanpa nilai `calc` manual.
+
+**Jebakan yang perlu diketahui.** Gambar jangan diposisikan langsung dengan insets: elemen replaced seperti `<img>` dengan `width`/`height: auto` memakai ukuran intrinsik — inset kiri/kanan tidak meregangkannya (inset kanan-bawah diabaikan karena over-constrained). Solusinya `<img>` dibungkus `<div>` yang diregangkan insets, lalu gambar mengisi wrapper dengan `h-full w-full` dan `object-contain`.
+
+**Konsekuensi yang diterima.** Lebar gambar di HP berkurang sedikit oleh gutter tombol maju/mundur; gambar lanskap mendapat pita kosong di atas-bawah (letterbox). Tautan ukuran penuh selalu tampil, juga untuk gambar artikel journal — menyimpang sedikit dari perilaku Fase 2B (yang tanpa caption), demi tangkapan layar berisi teks yang perlu dibaca.

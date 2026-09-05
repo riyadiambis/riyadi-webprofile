@@ -4,44 +4,72 @@
     dan foto galeri (Fase 4). Gambar artikel membukanya tanpa navigasi
     dan tanpa caption — persis perilaku Fase 2B; tombol maju/mundur dan
     caption hanya aktif untuk galeri.
+
+    Tata letak tiga baris (perbaikan pasca-Fase 4): baris atas tombol
+    tutup, baris tengah area gambar dengan gutter kiri-kanan untuk
+    tombol maju/mundur, baris bawah caption dan tautan ukuran penuh.
+    Tinggi maksimum gambar otomatis sebatas sisa baris tengah, dan
+    object-contain menjaga rasio asli — foto potret maupun lanskap
+    selalu muat utuh. Tidak ada scroll di dalam overlay; kunci scroll
+    halaman dipegang app.js.
 --}}
 <div
     data-lightbox-overlay
-    class="hidden fixed inset-0 z-50 items-center justify-center bg-ink/90 p-4"
+    class="hidden fixed inset-0 z-50 flex-col bg-ink/90"
     role="dialog"
     aria-modal="true"
     aria-label="Tampilan gambar"
     inert
 >
-    <button
-        type="button"
-        data-lightbox-close
-        class="absolute right-4 top-4 text-3xl leading-none text-paper"
-        aria-label="Tutup gambar"
-    >&times;</button>
+    <div class="flex h-12 shrink-0 items-center justify-end px-4">
+        <button
+            type="button"
+            data-lightbox-close
+            class="text-3xl leading-none text-paper"
+            aria-label="Tutup gambar"
+        >&times;</button>
+    </div>
 
-    <button
-        type="button"
-        data-lightbox-sebelum
-        class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-ink/50 px-3 py-1 text-3xl leading-none text-paper"
-        aria-label="Foto sebelumnya"
-        hidden
-    >&lsaquo;</button>
-
-    <button
-        type="button"
-        data-lightbox-sesudah
-        class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-ink/50 px-3 py-1 text-3xl leading-none text-paper"
-        aria-label="Foto berikutnya"
-        hidden
-    >&rsaquo;</button>
-
-    <figure class="relative max-h-full max-w-full">
-        <img data-lightbox-image src="" alt="" class="max-h-full max-w-full rounded-kartu">
-        <figcaption
-            data-lightbox-caption
-            class="absolute inset-x-0 bottom-0 rounded-b-kartu bg-ink/70 px-4 py-2 text-center text-sm text-paper"
+    <div class="relative min-h-0 flex-1">
+        <button
+            type="button"
+            data-lightbox-sebelum
+            class="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-ink/50 px-2 py-1 text-3xl leading-none text-paper md:px-3"
+            aria-label="Foto sebelumnya"
             hidden
-        ></figcaption>
-    </figure>
+        >&lsaquo;</button>
+
+        <button
+            type="button"
+            data-lightbox-sesudah
+            class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-ink/50 px-2 py-1 text-3xl leading-none text-paper md:px-3"
+            aria-label="Foto berikutnya"
+            hidden
+        >&rsaquo;</button>
+
+        {{-- Gambar dibungkus div, bukan diposisikan langsung: elemen
+             replaced seperti <img> dengan width/height auto memakai
+             ukuran intrinsik, jadi inset kiri-kanan tidak
+             meregangkannya. Div non-replaced diregangkan insets,
+             lalu <img> mengisinya dengan h-full w-full dan
+             object-contain. --}}
+        <div class="absolute inset-y-0 left-10 right-10 md:left-14 md:right-14">
+            <img
+                data-lightbox-image
+                src="" alt=""
+                class="h-full w-full rounded-kartu object-contain"
+            >
+        </div>
+    </div>
+
+    <div class="flex shrink-0 flex-col gap-1 bg-ink/70 px-4 py-2 text-center text-paper">
+        <p data-lightbox-caption class="text-sm" hidden></p>
+        <a
+            data-lightbox-penuh
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs underline underline-offset-2"
+        >Buka ukuran penuh</a>
+    </div>
 </div>

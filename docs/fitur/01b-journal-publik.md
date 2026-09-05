@@ -10,7 +10,7 @@ Artikel yang ditulis lewat panel admin tampil rapi di halaman publik, termasuk g
 - `/journal/{slug}`: jika `tautan_project` terisi, tampilkan tombolnya di bagian paling atas.
 - Sematan YouTube yang disimpan di Fase 2A dirender sebagai iframe yang bisa diputar.
 - Lebar kolom baca sekitar 70 karakter.
-- Gambar dalam tulisan bisa diklik untuk diperbesar.
+- Gambar dalam tulisan bisa diklik untuk diperbesar, dengan tautan untuk membuka ukuran penuh di tab baru.
 
 ## Di luar cakupan
 Panel admin dan pipeline media. Itu sudah selesai di Fitur 01a.
