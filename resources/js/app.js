@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gambar = overlay.querySelector('[data-lightbox-image]');
     const caption = overlay.querySelector('[data-lightbox-caption]');
+    const tautanPenuh = overlay.querySelector('[data-lightbox-penuh]');
     const tombolSebelum = overlay.querySelector('[data-lightbox-sebelum]');
     const tombolSesudah = overlay.querySelector('[data-lightbox-sesudah]');
     const tombolTutup = overlay.querySelector('[data-lightbox-close]');
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gambar.src = item.src;
         gambar.alt = item.alt || '';
+        tautanPenuh.href = item.src;
 
         if (item.caption) {
             caption.textContent = item.caption;
@@ -59,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.classList.remove('flex');
         overlay.setAttribute('inert', '');
         gambar.src = '';
+        tautanPenuh.href = '';
         document.body.classList.remove('overflow-hidden');
 
         if (fokusSemula) {

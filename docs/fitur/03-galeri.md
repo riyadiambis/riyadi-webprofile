@@ -16,7 +16,8 @@ Fase roadmap: 4
 
 ## Rincian pelaksanaan
 - Kolom `photos.gambar` menyimpan basis nama (direktori UUID tanpa nama turunan); ketiga URL disusun TurunanGambar. Alasannya di `docs/keputusan.md`.
-- Overlay lightbox dipasang sekali di layout publik dan dipakai bersama gambar artikel journal (Fase 2B). Foto galeri menambah tombol maju/mundur, panah keyboard, geser sentuh, dan caption; gambar artikel tetap tanpa keempatnya.
+- Overlay lightbox dipasang sekali di layout publik dan dipakai bersama gambar artikel journal (Fase 2B). Foto galeri menambah tombol maju/mundur, panah keyboard, geser sentuh, dan caption; gambar artikel tetap tanpa keempatnya, tapi keduanya mendapat tautan "Buka ukuran penuh" yang membuka berkas penuh di tab baru.
+- Overlay disusun tiga baris: tombol tutup di atas, area gambar di tengah dengan gutter kiri-kanan untuk tombol maju/mundur, caption dan tautan ukuran penuh di bawah. Gambar dibatasi tinggi dan lebar oleh sisa area tengah dan ditampilkan dengan object-contain, jadi selalu muat utuh tanpa terpotong. Tidak ada scroll di dalam overlay; kunci scroll halaman tetap dipertahankan.
 - Grid memuat thumbnail bertahap: 8 ubin pertama `loading="eager"`, sisanya `loading="lazy"` native. Ukuran penuh baru dimuat saat foto dibuka.
 
 ## Kriteria lolos
