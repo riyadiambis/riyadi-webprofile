@@ -201,3 +201,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }, jedaAwal);
     });
 });
+
+// Slider beranda (Fase 5), sesuai docs/fitur/04-beranda.md. Vanilla
+// JS, tanpa paket pihak ketiga.
+//
+// Slider DIAM — tidak ada timer di sini. Dua mekanisme penggeser:
+// sentuhan di HP lewat guliran native browser (dipasang di Blade
+// dengan overflow-x-auto + snap), dan tombol panah di desktop lewat
+// scrollBy di bawah. Panah disembunyikan kalau isinya tidak melimpah
+// (dan selalu tersembunyi di layar kecil lewat kelas md:flex di
+// Blade). Ini berbeda dari kode geser lightbox yang berpindah satu
+// gambar secara diskrit — kebutuhannya memang berbeda, lihat
+// docs/keputusan.md.
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-slider-geser]').forEach((bagian) => {
+        const layar = bagian.querySelector('[data-slider-layar]');
+        const tombolKiri = bagian.querySelector('[data-slider-kiri]');
+        const tombolKanan = bagian.querySelector('[data-slider-kanan]');
+
+        if (!layar || !tombolKiri || !tombolKanan) {
+            return;
+        }
+
+        const sejajarkan = () => {
+            const bisaDigeser = layar.scrollWidth > layar.clientWidth + 1;
+            tombolKiri.hidden = !bisaDigeser;
+            tombolKanan.hidden = !bisaDigeser;
+        };
+
+        const geser = (arah) => {
+            const kartu = layar.querySelector(':scope > *');
+            const lebar = kartu ? kartu.offsetWidth : layar.clientWidth;
+            layar.scrollBy({ left: arah * lebar, behavior: 'smooth' });
+        };
+
+        tombolKiri.addEventListener('click', () => geser(-1));
+        tombolKanan.addEventListener('click', () => geser(1));
+
+        sejajarkan();
+        window.addEventListener('resize', sejajarkan);
+    });
+});

@@ -27,6 +27,16 @@ class ProjectsTable
                     ->searchable()
                     ->sortable()
                     ->weight('semibold'),
+                TextColumn::make('ringkasan')
+                    ->label('Ringkasan (Indonesia)')
+                    ->limit(40)
+                    ->tooltip(fn (?string $state): ?string => $state),
+                TextColumn::make('ringkasan_en')
+                    ->label('Ringkasan (Inggris)')
+                    ->limit(40)
+                    ->formatStateUsing(fn (?string $state): string => blank($state) ? 'belum diterjemahkan' : $state)
+                    ->badge()
+                    ->color(fn (?string $state): string => blank($state) ? 'danger' : 'gray'),
                 TextColumn::make('tahun')
                     ->sortable(),
                 TextColumn::make('post.judul')

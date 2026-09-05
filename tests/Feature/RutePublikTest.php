@@ -3,6 +3,7 @@
 use App\Models\Photo;
 use App\Models\Post;
 use App\Models\Project;
+use App\Models\SiteText;
 
 /*
  | Smoke test rute publik yang diperkenalkan Fase 1.
@@ -24,6 +25,72 @@ it('mengarahkan panel admin ke halaman login saat belum masuk', function () {
 
 it('membalas 200 pada halaman login admin', function () {
     $this->get('/admin/login')->assertOk();
+});
+
+/*
+ | Dwibahasa beranda, diminta pemilik di Fase 5. Cookie `bahasa`
+ | dikirim lewat withCookie — meski namanya menyesatkan, justru
+ | withCookie yang mengenkripsi cookie dulu (lewat
+ | prepareCookiesForRequest) sehingga formatnya sama dengan produksi
+ | dan berhasil didekripsi EncryptCookies. withUnencryptedCookie
+ | mengirim nilai mentah yang di-null-kan saat dekripsi gagal, dan
+ | bahasa diam-diam jatuh ke Indonesia. Alasan lengkap dan larangan
+ | menukarnya balik ada di docs/keputusan.md.
+ */
+it('membalas 200 di beranda dalam kedua pilihan bahasa', function (string $pilihan) {
+    $this->withCookie('bahasa', $pilihan)
+        ->get('/')
+        ->assertOk();
+})->with(['id', 'en']);
+
+/*
+ | Aturan cadangan dwibahasa adalah logika, bukan tampilan — tidak
+ | cukup dinilai lewat pemeriksaan visual, sama seperti preseden
+ | bisaDiklik() di Fase 3. Saat bahasa EN aktif, teks berbahasa
+ | Inggris tampil untuk yang sudah diterjemahkan, dan versi
+ | Indonesia tetap tampil untuk yang belum. Hanya project dipin yang
+ | muncul di beranda, jadi keduanya dibuat dipin.
+ */
+it('mengikuti bahasa EN dengan cadangan Indonesia untuk ringkasan yang kosong', function () {
+    SiteText::create([
+        'kunci' => 'perkenalan',
+        'nilai_id' => 'Perkenalan bahasa Indonesia.',
+        'nilai_en' => 'Introduction in English.',
+    ]);
+
+    Project::create([
+        'nama' => 'Project Sudah Diterjemahkan',
+        'ringkasan' => 'Ringkasan Indonesia.',
+        'ringkasan_en' => 'English summary.',
+        'gambar' => ['project/uuid-1/thumb.webp'],
+        'tahun' => '2026',
+        'dipin' => true,
+        'urutan' => 1,
+    ]);
+
+    Project::create([
+        'nama' => 'Project Belum Diterjemahkan',
+        'ringkasan' => 'Ringkasan Indonesia kedua.',
+        'ringkasan_en' => null,
+        'gambar' => ['project/uuid-2/thumb.webp'],
+        'tahun' => '2026',
+        'dipin' => true,
+        'urutan' => 2,
+    ]);
+
+    $this->withCookie('bahasa', 'en')
+        ->get('/')
+        ->assertOk()
+        // Teks yang punya versi Inggris tampil dalam bahasa Inggris.
+        ->assertSee('Introduction in English.')
+        ->assertSee('English summary.')
+        ->assertDontSee('Ringkasan Indonesia.')
+        ->assertDontSee('Perkenalan bahasa Indonesia.')
+        // Yang belum diterjemahkan jatuh ke bahasa Indonesia,
+        // bukan tampil kosong. Nama project tidak diterjemahkan.
+        ->assertSee('Ringkasan Indonesia kedua.')
+        ->assertSee('Project Sudah Diterjemahkan')
+        ->assertSee('Project Belum Diterjemahkan');
 });
 
 /*
