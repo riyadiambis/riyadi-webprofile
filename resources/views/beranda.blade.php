@@ -41,12 +41,20 @@
                 </p>
             @endif
 
-            <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold justify-center md:justify-start">
-                <li><a href="{{ config('site.sosial.linkedin') }}" class="text-accent-alt hover:underline underline-offset-2">LinkedIn</a></li>
-                <li><a href="{{ config('site.sosial.github') }}" class="text-accent-alt hover:underline underline-offset-2">GitHub</a></li>
-                <li><a href="{{ config('site.sosial.tiktok') }}" class="text-accent-alt hover:underline underline-offset-2">TikTok</a></li>
-                <li><a href="{{ config('site.sosial.instagram') }}" class="text-accent-alt hover:underline underline-offset-2">Instagram</a></li>
-                <li><a href="mailto:{{ config('site.email') }}" class="text-accent-alt hover:underline underline-offset-2">Email</a></li>
+            {{--
+                Tombol kertas timbul, gaya sama dengan bingkai foto
+                profil: border tegas + bayangan offset solid. Efek
+                tertekan juga muncul saat hover/sentuh lewat
+                .tekan-hover (bukan .tekan yang dipakai elemen lain,
+                supaya tidak ikut berubah). Rata tengah dan boleh
+                turun baris di HP, tanpa dipaksa satu baris.
+            --}}
+            <ul class="mt-6 flex flex-wrap justify-center gap-3 text-sm font-semibold md:justify-start">
+                <li><a href="{{ config('site.sosial.linkedin') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">LinkedIn</a></li>
+                <li><a href="{{ config('site.sosial.github') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">GitHub</a></li>
+                <li><a href="{{ config('site.sosial.tiktok') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">TikTok</a></li>
+                <li><a href="{{ config('site.sosial.instagram') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">Instagram</a></li>
+                <li><a href="mailto:{{ config('site.email') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">Email</a></li>
             </ul>
         </div>
     </section>
