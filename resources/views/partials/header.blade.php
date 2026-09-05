@@ -6,6 +6,7 @@
         ['rute' => 'galeri', 'label' => 'Galeri'],
     ];
     $bahasaAktif = app()->getLocale();
+    $baruDitekan = session('bahasa_baru_ditekan', false);
 @endphp
 
 <header class="border-b-tegas border-line bg-paper/85 sticky top-0 z-10 backdrop-blur">
@@ -39,27 +40,46 @@
                 berikutnya — Blade tidak pernah membaca cookie
                 langsung, cukup app()->getLocale(), lihat
                 docs/keputusan.md.
+
+                Tampilan bingkai-geser: penanda diam di posisi yang
+                benar lewat class statis (translate-x-full/tanpa),
+                dan HANYA memutar animasi @keyframes kalau halaman ini
+                hasil langsung dari tombol yang baru ditekan (session
+                flash sekali pakai dari BahasaController) — navigasi
+                biasa tidak memutar ulang animasinya.
             --}}
-            <form method="POST" action="{{ route('bahasa') }}" class="flex items-center gap-1.5 text-sm" aria-label="Pilihan bahasa">
+            <form method="POST" action="{{ route('bahasa') }}" aria-label="Pilihan bahasa">
                 @csrf
-                <button
-                    type="submit" name="pilihan" value="id"
-                    aria-pressed="{{ $bahasaAktif === 'id' ? 'true' : 'false' }}"
-                    @class([
-                        'rounded-kecil px-2 py-0.5 transition-colors',
-                        'text-accent-alt font-bold underline underline-offset-4' => $bahasaAktif === 'id',
-                        'text-ink-soft hover:text-accent-alt' => $bahasaAktif !== 'id',
-                    ])
-                >ID</button>
-                <button
-                    type="submit" name="pilihan" value="en"
-                    aria-pressed="{{ $bahasaAktif === 'en' ? 'true' : 'false' }}"
-                    @class([
-                        'rounded-kecil px-2 py-0.5 transition-colors',
-                        'text-accent-alt font-bold underline underline-offset-4' => $bahasaAktif === 'en',
-                        'text-ink-soft hover:text-accent-alt' => $bahasaAktif !== 'en',
-                    ])
-                >EN</button>
+                <div class="relative inline-flex rounded-kecil border-tegas border-ink bg-card p-1">
+                    <span
+                        aria-hidden="true"
+                        @class([
+                            'absolute inset-1 w-9 rounded-kecil bg-accent-alt',
+                            'translate-x-full' => $bahasaAktif === 'en' && ! $baruDitekan,
+                            'animate-geser-ke-en' => $bahasaAktif === 'en' && $baruDitekan,
+                            'animate-geser-ke-id' => $bahasaAktif === 'id' && $baruDitekan,
+                        ])
+                    ></span>
+
+                    <button
+                        type="submit" name="pilihan" value="id"
+                        aria-pressed="{{ $bahasaAktif === 'id' ? 'true' : 'false' }}"
+                        @class([
+                            'relative z-10 w-9 rounded-kecil py-1 text-center text-sm font-semibold transition-colors',
+                            'text-card' => $bahasaAktif === 'id',
+                            'text-ink-soft hover:text-accent-alt' => $bahasaAktif !== 'id',
+                        ])
+                    >ID</button>
+                    <button
+                        type="submit" name="pilihan" value="en"
+                        aria-pressed="{{ $bahasaAktif === 'en' ? 'true' : 'false' }}"
+                        @class([
+                            'relative z-10 w-9 rounded-kecil py-1 text-center text-sm font-semibold transition-colors',
+                            'text-card' => $bahasaAktif === 'en',
+                            'text-ink-soft hover:text-accent-alt' => $bahasaAktif !== 'en',
+                        ])
+                    >EN</button>
+                </div>
             </form>
         </div>
     </div>

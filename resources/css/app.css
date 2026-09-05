@@ -114,6 +114,49 @@
 }
 
 /*
+ | Interaksi tekan yang juga bereaksi ke hover/sentuh, bukan cuma
+ | :active sungguhan. Dipakai khusus tombol sosial di beranda supaya
+ | .tekan (dipakai kartu-post, kartu-project, tombol lain) tidak ikut
+ | berubah perilakunya.
+ */
+@utility tekan-hover {
+    transition:
+        transform 120ms ease,
+        box-shadow 120ms ease;
+
+    &:hover,
+    &:active {
+        transform: translate(2px, 2px);
+        box-shadow: var(--shadow-offset-tekan);
+    }
+}
+
+/*
+ | Penanda pengalih bahasa (Fase 5): bergeser ke sisi yang baru saja
+ | ditekan. Form POST tanpa JavaScript berarti ini reload halaman
+ | penuh, jadi animasinya dipicu server (session flash sekali pakai
+ | dari BahasaController), bukan class JS. Navigasi biasa tidak
+ | memutar ulang animasi ini.
+ */
+@keyframes geser-ke-en {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+@keyframes geser-ke-id {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@utility animate-geser-ke-en {
+    animation: geser-ke-en 250ms ease-out both;
+}
+
+@utility animate-geser-ke-id {
+    animation: geser-ke-id 250ms ease-out both;
+}
+
+/*
  | Slider beranda (Fase 5): scrollbar disembunyikan supaya guliran
  | horizontal terlihat bersih, sementara gulirannya sendiri tetap
  | berfungsi penuh (sentuhan, panah, dan trackpad).
