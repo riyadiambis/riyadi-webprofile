@@ -50,11 +50,12 @@
                 turun baris di HP, tanpa dipaksa satu baris.
             --}}
             <ul class="mt-6 flex flex-wrap justify-center gap-3 text-sm font-semibold md:justify-start">
+                <li><a href="mailto:{{ config('site.email') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">Email</a></li>
                 <li><a href="{{ config('site.sosial.linkedin') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">LinkedIn</a></li>
                 <li><a href="{{ config('site.sosial.github') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">GitHub</a></li>
                 <li><a href="{{ config('site.sosial.tiktok') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">TikTok</a></li>
                 <li><a href="{{ config('site.sosial.instagram') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">Instagram</a></li>
-                <li><a href="mailto:{{ config('site.email') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">Email</a></li>
+                <li><a href="{{ config('site.sosial.youtube') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-4 py-2 text-ink shadow-offset tekan-hover">YouTube</a></li>
             </ul>
         </div>
     </section>
