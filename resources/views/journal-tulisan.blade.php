@@ -16,7 +16,7 @@
         @endif
 
         <p class="label-bagian">
-            {{ $post->terbit_pada?->translatedFormat('d F Y') }}
+            {{ $post->terbit_pada?->locale('id')->translatedFormat('d F Y') }}
         </p>
 
         <h1 class="font-judul text-3xl md:text-4xl font-semibold mt-3 leading-tight">

@@ -19,11 +19,19 @@ class SiteText extends Model
     ];
 
     /**
-     * Versi bahasa Inggris kalau ada, jatuh ke bahasa Indonesia kalau kosong.
-     * Aturan cadangan ini dipakai Fase 5, lihat docs/fitur/05-dwibahasa.md.
+     * Versi bahasa Inggris kalau ada, jatuh ke bahasa Indonesia kalau
+     * kosong, lihat docs/fitur/05-dwibahasa.md.
+     *
+     * Bahasa aktif datang dari app()->getLocale() yang ditetapkan
+     * middleware SetLocale (Fase 5). Pemanggil boleh menyodorkan
+     * bahasa sendiri untuk keperluan tertentu. PHP tidak mengizinkan
+     * pemanggilan fungsi sebagai nilai default parameter, jadi
+     * penggantinya dilakukan di badan fungsi.
      */
-    public function nilai(string $bahasa = 'id'): string
+    public function nilai(?string $bahasa = null): string
     {
+        $bahasa ??= app()->getLocale();
+
         if ($bahasa === 'en' && filled($this->nilai_en)) {
             return $this->nilai_en;
         }

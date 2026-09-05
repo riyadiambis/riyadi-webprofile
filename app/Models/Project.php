@@ -71,13 +71,16 @@ class Project extends Model
 
     /**
      * Teks ringkasan yang ditampilkan, dengan cadangan ke bahasa
-     * Indonesia. Titik tunggal ini disiapkan supaya pengalih bahasa di
-     * Fase 5 tinggal memanggil ringkasanTampil('en') sesuai cookie
-     * pilihan pengunjung — pengalihnya sendiri belum dibangun di sini.
+     * Indonesia. Titik tunggal dwibahasa project sejak Fase 3; Fase 5
+     * menyambungkan pengalih bahasa ke sini lewat app()->getLocale()
+     * yang ditetapkan middleware SetLocale — kartu di beranda maupun
+     * di halaman /project sama-sama lewat sini, tanpa logika kedua.
      * Nama project tidak diterjemahkan, lihat docs/PRD.md bagian 7.6.
      */
-    public function ringkasanTampil(string $bahasa = 'id'): string
+    public function ringkasanTampil(?string $bahasa = null): string
     {
+        $bahasa ??= app()->getLocale();
+
         if ($bahasa === 'en' && filled($this->ringkasan_en)) {
             return $this->ringkasan_en;
         }

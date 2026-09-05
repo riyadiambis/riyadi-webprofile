@@ -55,3 +55,37 @@ php artisan filament:assets
 **Jebakan yang perlu diketahui.** Gambar jangan diposisikan langsung dengan insets: elemen replaced seperti `<img>` dengan `width`/`height: auto` memakai ukuran intrinsik — inset kiri/kanan tidak meregangkannya (inset kanan-bawah diabaikan karena over-constrained). Solusinya `<img>` dibungkus `<div>` yang diregangkan insets, lalu gambar mengisi wrapper dengan `h-full w-full` dan `object-contain`.
 
 **Konsekuensi yang diterima.** Lebar gambar di HP berkurang sedikit oleh gutter tombol maju/mundur; gambar lanskap mendapat pita kosong di atas-bawah (letterbox). Tautan ukuran penuh selalu tampil, juga untuk gambar artikel journal — menyimpang sedikit dari perilaku Fase 2B (yang tanpa caption), demi tangkapan layar berisi teks yang perlu dibaca.
+
+## Bahasa aktif ditentukan satu middleware, titik tunggal `app()->getLocale()` (Fase 5)
+
+**Keputusan.** Cookie `bahasa` dibaca **satu kali** oleh middleware `App\Http\Middleware\SetLocale` yang didaftarkan di grup web, lalu disimpan sebagai locale aplikasi lewat `app()->setLocale()`. Tidak ada Blade atau controller yang membaca cookie langsung; semua cukup memakai `app()->getLocale()`. Dua titik dwibahasa (`SiteText::nilai()` dan `Project::ringkasanTampil()`) memakai pola `?string $bahasa = null` lalu `$bahasa ??= app()->getLocale()` di badan fungsi — pemanggil lama tanpa argumen tidak berubah, dan kartu project Fase 3 otomatis mengikuti bahasa tanpa logika kedua.
+
+**Kenapa.** Persyaratan Fase 5: satu tempat saja yang menentukan bahasa aktif, bukan pengecekan cookie yang tersebar di banyak Blade. PHP tidak mengizinkan pemanggilan fungsi sebagai nilai default parameter (fatal saat kompilasi), makanya penggantinya di badan fungsi.
+
+**Konsekuensi yang diterima.** Bahasa aktif adalah global aplikasi selama satu permintaan; kode apa pun yang memakai `app()->getLocale()` ikut terpengaruh (misalnya atribut `lang` di `<html>`). Karena itu tanggal journal dikunci terpisah — lihat keputusan berikutnya.
+
+## Tanggal journal dikunci ke locale Indonesia di tempat render (Fase 5)
+
+**Keputusan.** Tanggal terbit yang dirender publik (`kartu-post` dan halaman tulisan) memanggil `->locale('id')->translatedFormat('d F Y')` — locale dikunci eksplisit di tempat render, bukan menyerahkan ke locale aplikasi.
+
+**Kenapa.** Laravel menyebarkan perubahan locale ke Carbon, jadi `app()->setLocale('en')` dari pengalih bahasa ikut mengganti format tanggal journal. Cakupan dwibahasa v1 hanya teks beranda dan ringkasan project; journal dan galeri tidak boleh berubah saat bahasa dialihkan (`docs/fitur/05-dwibahasa.md`). Menggantungkan perilaku ini pada "locale saat boot" adalah efek samping yang rapuh.
+
+**Konsekuensi yang diterima.** Tanggal journal selalu berbahasa Indonesia, juga saat pengunjung memilih EN. Kalau suatu saat journal ikut dwibahasa, kunci ini yang pertama dicabut.
+
+## Slider beranda memakai guliran native, bukan kode geser lightbox (Fase 5)
+
+**Keputusan.** Slider beranda digeser dengan guliran native browser (`overflow-x-auto` + snap) untuk sentuhan, dan `scrollBy()` untuk tombol panah desktop. Kode geser sentuh lightbox Fase 4 (ambang 40px, berpindah satu gambar) **tidak** dipakai bersama.
+
+**Kenapa.** Kebutuhannya berbeda jauh: lightbox berpindah satu gambar secara diskrit di dalam overlay yang scroll-nya terkunci, sementara slider adalah guliran bebas yang butuh momentum dan rubber-band asli layar sentuh. Memaksakan threshold-swap ke slider menghilangkan momentum HP; membangun ulang lightbox di atas native scroll merusak overlay yang terkunci. Menyatukannya berarti membawa dua perilaku berlawanan ke dalam satu kode.
+
+**Konsekuensi yang diterima.** Dua blok JavaScript kecil di `app.js` yang bertanggung jawab sendiri-sendiri, tanpa paket pihak ketiga. Slider tetap diam (tanpa autoplay) — kartu project di dalamnya mempertahankan rotasi gambarnya sendiri dari Fase 3.
+
+## Cookie bahasa di test dikirim dengan `withCookie`, bukan `withUnencryptedCookie` (Fase 5)
+
+**Keputusan.** Test dwibahasa di `tests/Feature/RutePublikTest.php` mengirim cookie `bahasa` lewat `withCookie('bahasa', 'en')`. Enkripsi cookie aplikasi tidak diubah, dan cookie `bahasa` tidak dimasukkan ke daftar cookie tak terenkripsi (`EncryptCookies::$except`). Rencana awal memakai `withUnencryptedCookie` atas instruksi pemilik, lalu dikoreksi setelah pengukuran membuktikan kebalikannya.
+
+**Kenapa.** Penamaan keduanya menyesatkan. `withCookie` menggandakan alur produksi: kerangka test mengenkripsinya lebih dulu lewat `prepareCookiesForRequest()` (prefix + kunci APP_KEY yang sama), lalu `EncryptCookies` di sisi aplikasi mendekripsinya normal. `withUnencryptedCookie` justru mengirim nilai **mentah**; `EncryptCookies` gagal mendekripsinya, cookie di-null-kan, dan middleware `SetLocale` diam-diam jatuh ke bahasa Indonesia — kegagalan senyap yang tidak terlihat karena halaman tetap membalas 200.
+
+**Jebakan yang perlu diketahui.** Pengukuran A/B dengan `RefreshDatabase` aktif (kondisi nyata `RutePublikTest` lewat `tests/Pest.php`) membuktikan: `withUnencryptedCookie('bahasa', 'en')` menghasilkan `<html lang="id">`, sedangkan `withCookie('bahasa', 'en')` menghasilkan `<html lang="en">`. Jangan ada yang menukar balik ke `withUnencryptedCookie` karena "terlihat lebih sesuai" — hasilnya justru jatuh ke Indonesia tanpa bunyi. (Catatan: mengukur cookie tanpa `RefreshDatabase` menghasilkan galat 500 karena tabel tidak ada, dan `lang="en"` di halaman galat bawaan Laravel sempat menyesatkan pengukuran — selalu ukur dengan `RefreshDatabase`.)
+
+**Konsekuensi yang diterima.** Nilai cookie di test terenkripsi persis seperti di produksi, sehingga test tidak bisa memeriksa nilai mentah cookie — hanya efeknya pada halaman yang dirender.

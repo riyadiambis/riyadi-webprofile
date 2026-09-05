@@ -97,7 +97,7 @@ Fase paling penting bersama 2B. Kalau kedua fase ini gagal, produk ini tidak ada
 Dikerjakan terakhir di antara halaman, karena beranda memanggil data dari tiga fase sebelumnya.
 
 - Bagian perkenalan dan tautan sosial.
-- Tiga slider: project pilihan, tulisan pilihan, galeri terbaru. Semuanya dari data yang ditandai pin.
+- Tiga slider: project pilihan dan tulisan pilihan dari data yang ditandai pin, galeri dari foto terbaru.
 - Tautan "lihat semua" di setiap bagian.
 - Pengalih bahasa ID/EN di header, berlaku untuk teks beranda dan ringkasan project sesuai bagian 7.6 PRD. Nama project tidak diterjemahkan. Isi journal dan galeri tidak ikut berubah.
 

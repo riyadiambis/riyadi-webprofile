@@ -18,6 +18,13 @@ Fase roadmap: 6. Fase pertama yang menyentuh server. Sebelum fase ini, seluruh p
 ## Di luar cakupan
 Meta tag, Open Graph, sitemap, RSS, halaman 404, dan Lighthouse. Semuanya masuk Fase 7, lihat `07-poles.md`.
 
+## Cache dan pilihan bahasa
+Pengalih bahasa menyimpan pilihan di cookie `bahasa` dan HTML halaman berubah mengikutinya (Fase 5). Akibatnya untuk cache:
+
+- Cloudflare bawaan hanya meng-cache aset statis, bukan HTML — tanpa konfigurasi tambahan, pengalih bahasa aman.
+- Kalau suatu saat cache HTML diaktifkan (misalnya aturan "Cache Everything"), cookie `bahasa` wajib masuk cache key, atau halaman `/` dikecualikan dari cache. Tanpa itu pengunjung bisa menerima HTML berbahasa lain dari cache bersama.
+- `view:cache` dan `route:cache` aman dipakai: template Blade dan tabel rute tidak bergantung bahasa — bahasa aktif ditentukan per permintaan oleh middleware `SetLocale`, bukan dibekukan saat kompilasi.
+
 ## Kriteria lolos
 Domain dibuka dari jaringan seluler menampilkan situs dengan HTTPS, panel admin tidak bisa dibuka dari luar, dan aplikasi hidup lagi sendiri setelah container di-restart.
 

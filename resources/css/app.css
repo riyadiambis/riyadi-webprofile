@@ -114,6 +114,19 @@
 }
 
 /*
+ | Slider beranda (Fase 5): scrollbar disembunyikan supaya guliran
+ | horizontal terlihat bersih, sementara gulirannya sendiri tetap
+ | berfungsi penuh (sentuhan, panah, dan trackpad).
+ */
+@utility scrollbar-tersembunyi {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/*
  | Tipografi isi tulisan journal. @tailwindcss/typography tidak
  | dipasang — ini pengganti tulisan tangan yang lebih kecil, dan tetap
  | murni memakai token di atas, tanpa nilai mentah.
