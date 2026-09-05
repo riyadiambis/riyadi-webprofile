@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Photo;
 use App\Models\Post;
 use App\Models\Project;
 
@@ -53,4 +54,60 @@ it('kartu project menuju tulisan yang terbit dan menandai yang belum tertaut', f
         ->assertOk()
         ->assertSee(route('journal.tulisan', $post->slug), escape: false)
         ->assertSee('Segera ditulis');
+});
+
+/*
+ | Grid galeri, diminta pemilik di Fase 4. Bukan sekadar mencari
+ | string di seluruh halaman: path ukuran penuh memang wajar muncul
+ | di data-src (untuk lightbox), jadi yang diperiksa adalah kedua
+ | atribut secara terpisah — src pada <img> grid wajib turunan
+ | thumb, dan turunan penuh hanya boleh ada di data-src, tidak
+ | pernah di src.
+ */
+it('grid galeri memuat thumb di src dan menaruh penuh hanya di data-src', function () {
+    foreach (range(1, 10) as $nomor) {
+        Photo::create([
+            'gambar' => "galeri/uuid-{$nomor}",
+            'caption' => "Foto {$nomor}",
+            'urutan' => $nomor,
+        ]);
+    }
+
+    $html = $this->get('/galeri')->getContent();
+
+    $dom = new DOMDocument;
+    libxml_use_internal_errors(true);
+    $dom->loadHTML($html);
+    $xpath = new DOMXPath($dom);
+
+    $ubin = $xpath->query('//button[@data-galeri-grup and @data-indeks]');
+    expect($ubin->length)->toBe(10);
+
+    $gambarGrid = [];
+
+    foreach ($ubin as $tombol) {
+        $img = $tombol->getElementsByTagName('img')->item(0);
+        expect($img)->not->toBeNull();
+
+        $src = $img->getAttribute('src');
+        $dataSrc = $tombol->getAttribute('data-src');
+
+        expect($src)->toEndWith('/thumb.webp')
+            ->and($dataSrc)->toEndWith('/penuh.webp')
+            ->and($src)->not->toContain('/penuh.webp')
+            // Kedua atribut menunjuk basis direktori yang sama.
+            ->and(dirname($dataSrc))->toBe(dirname($src));
+
+        $gambarGrid[] = $img;
+    }
+
+    // Tidak ada satu pun <img> di halaman yang memakai turunan penuh.
+    foreach ($xpath->query('//img') as $img) {
+        expect($img->getAttribute('src'))->not->toContain('/penuh.webp');
+    }
+
+    // Pemuatan bertahap: 8 ubin pertama eager, sisanya lazy native.
+    foreach ($gambarGrid as $index => $img) {
+        expect($img->getAttribute('loading'))->toBe($index < 8 ? 'eager' : 'lazy');
+    }
 });

@@ -14,5 +14,7 @@
     </main>
 
     @include('partials.footer')
+
+    @include('partials.lightbox')
 </body>
 </html>

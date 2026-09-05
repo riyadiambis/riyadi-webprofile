@@ -27,6 +27,4 @@
             {!! $konten !!}
         </div>
     </article>
-
-    @include('partials.lightbox')
 @endsection

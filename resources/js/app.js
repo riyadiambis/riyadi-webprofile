@@ -1,5 +1,11 @@
-// Lightbox seadanya untuk gambar di dalam tulisan journal. Vanilla JS,
-// tanpa paket pihak ketiga, sesuai docs/fitur/01b-journal-publik.md.
+// Lightbox terpadu, dipasang satu kali di layout dan dipakai bersama
+// oleh gambar di dalam tulisan journal (Fase 2B) dan foto galeri
+// (Fase 4). Vanilla JS, tanpa paket pihak ketiga.
+//
+// Gambar artikel membuka satu gambar saja: tanpa navigasi dan tanpa
+// caption, persis perilaku Fase 2B. Foto galeri membuka grup dan
+// menambahkan tombol maju/mundur, panah keyboard, geser di layar
+// sentuh, dan caption.
 document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.querySelector('[data-lightbox-overlay]');
 
@@ -8,31 +14,97 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const gambar = overlay.querySelector('[data-lightbox-image]');
+    const caption = overlay.querySelector('[data-lightbox-caption]');
+    const tombolSebelum = overlay.querySelector('[data-lightbox-sebelum]');
+    const tombolSesudah = overlay.querySelector('[data-lightbox-sesudah]');
+    const tombolTutup = overlay.querySelector('[data-lightbox-close]');
 
-    function buka(src, alt) {
-        gambar.src = src;
-        gambar.alt = alt || '';
+    let grup = [];
+    let indeks = 0;
+    let fokusSemula = null;
+
+    function tampilkan() {
+        const item = grup[indeks];
+
+        gambar.src = item.src;
+        gambar.alt = item.alt || '';
+
+        if (item.caption) {
+            caption.textContent = item.caption;
+            caption.hidden = false;
+        } else {
+            caption.hidden = true;
+        }
+
+        const adaNavigasi = grup.length > 1;
+        tombolSebelum.hidden = !adaNavigasi;
+        tombolSesudah.hidden = !adaNavigasi;
+    }
+
+    function buka(daftar, indeksBaru) {
+        fokusSemula = document.activeElement;
+        grup = daftar;
+        indeks = indeksBaru;
+
+        tampilkan();
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
+        overlay.removeAttribute('inert');
         document.body.classList.add('overflow-hidden');
+        tombolTutup.focus();
     }
 
     function tutup() {
         overlay.classList.add('hidden');
         overlay.classList.remove('flex');
+        overlay.setAttribute('inert', '');
         gambar.src = '';
         document.body.classList.remove('overflow-hidden');
+
+        if (fokusSemula) {
+            fokusSemula.focus();
+        }
     }
+
+    function geser(arah) {
+        if (grup.length < 2) {
+            return;
+        }
+
+        indeks = (indeks + arah + grup.length) % grup.length;
+        tampilkan();
+    }
+
+    const pemicuGaleri = [...document.querySelectorAll('[data-lightbox-trigger][data-galeri-grup]')];
 
     document.querySelectorAll('[data-lightbox-trigger]').forEach((tombol) => {
         tombol.addEventListener('click', () => {
-            buka(tombol.dataset.src, tombol.dataset.alt);
+            if (tombol.dataset.galeriGrup !== undefined) {
+                buka(
+                    pemicuGaleri.map((pemicu) => ({
+                        src: pemicu.dataset.src,
+                        alt: pemicu.dataset.alt || '',
+                        caption: pemicu.dataset.caption || '',
+                    })),
+                    Number(tombol.dataset.indeks) || 0,
+                );
+
+                return;
+            }
+
+            buka(
+                [{ src: tombol.dataset.src, alt: tombol.dataset.alt || '', caption: '' }],
+                0,
+            );
         });
     });
 
     overlay.querySelectorAll('[data-lightbox-close]').forEach((tombol) => {
         tombol.addEventListener('click', tutup);
     });
+
+    tombolSebelum.addEventListener('click', () => geser(-1));
+    tombolSesudah.addEventListener('click', () => geser(1));
 
     // Klik di luar gambar (langsung pada latar overlay) juga menutup.
     overlay.addEventListener('click', (peristiwa) => {
@@ -42,9 +114,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('keydown', (peristiwa) => {
-        if (peristiwa.key === 'Escape' && !overlay.classList.contains('hidden')) {
+        if (overlay.classList.contains('hidden')) {
+            return;
+        }
+
+        if (peristiwa.key === 'Escape') {
             tutup();
         }
+
+        if (peristiwa.key === 'ArrowLeft') {
+            geser(-1);
+        }
+
+        if (peristiwa.key === 'ArrowRight') {
+            geser(1);
+        }
+    });
+
+    // Navigasi geser di layar sentuh, khusus mode galeri.
+    let sentuhAwalX = null;
+
+    overlay.addEventListener(
+        'touchstart',
+        (peristiwa) => {
+            if (peristiwa.touches.length === 1) {
+                sentuhAwalX = peristiwa.touches[0].clientX;
+            }
+        },
+        { passive: true },
+    );
+
+    overlay.addEventListener('touchend', (peristiwa) => {
+        if (sentuhAwalX === null) {
+            return;
+        }
+
+        const akhirX = peristiwa.changedTouches[0].clientX;
+        const jarak = akhirX - sentuhAwalX;
+        sentuhAwalX = null;
+
+        if (Math.abs(jarak) < 40) {
+            return;
+        }
+
+        geser(jarak < 0 ? 1 : -1);
     });
 });
 
