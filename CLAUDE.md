@@ -76,3 +76,5 @@ Di akhir setiap fase, tulis ringkasan berisi: apa yang berubah, keputusan apa ya
 - Dilarang force-push ke `main` dalam keadaan apa pun tanpa izin pemilik lebih dulu. Ke branch fitur milik sendiri boleh.
 - Jangan mengambil kredensial dari Windows Credential Manager, keyring, atau penyimpanan sistem lain. Kalau butuh autentikasi dan gagal, hentikan pekerjaan dan minta pemilik yang menjalankan perintahnya.
 - Jangan menghapus direktori `.git` atau membubarkan repositori tanpa izin pemilik lebih dulu.
+- Dilarang menjalankan perintah yang mematikan proses secara menyeluruh berdasarkan nama program (`taskkill /IM`, `killall`, dan sejenisnya). Matikan hanya proses yang dibuat sendiri, dengan PID yang diketahui. Kalau perlu mematikan proses lain, berhenti dan minta izin dulu.
+- Dilarang menjalankan perintah yang efeknya keluar dari folder project tanpa izin, termasuk mengubah pengaturan sistem, mematikan layanan, dan menghapus berkas di luar repo.
