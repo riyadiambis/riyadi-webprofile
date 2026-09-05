@@ -15,6 +15,9 @@
  | Domain contoh.invalid sengaja dipakai karena TLD khusus
  | placeholder — tidak bisa di-resolve dan jelas terlihat bukan
  | alamat asli.
+ |
+ | Pengecualian: sosial.youtube sudah alamat ASLI, bukan isian
+ | sementara — jangan ikut diganti bersama yang lain.
  */
 
 return [
@@ -25,6 +28,7 @@ return [
         'github' => 'https://contoh.invalid/github',
         'tiktok' => 'https://contoh.invalid/tiktok',
         'instagram' => 'https://contoh.invalid/instagram',
+        'youtube' => 'https://www.youtube.com/@riyadi_ofisharuu',
     ],
 
     'email' => 'contoh@contoh.invalid',
