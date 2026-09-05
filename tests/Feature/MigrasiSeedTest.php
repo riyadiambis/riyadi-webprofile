@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Photo;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\SiteText;
@@ -26,4 +27,5 @@ it('menjalankan migrate:fresh --seed sampai bersih dari nol', function () {
     expect(SiteText::count())->toBe(2);
     expect(Post::count())->toBe(2);
     expect(Project::count())->toBe(2);
+    expect(Photo::count())->toBe(20);
 });

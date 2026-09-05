@@ -37,3 +37,11 @@ php artisan filament:assets
 **Kenapa.** Panel admin membolehkan menautkan project ke post yang masih **draf** — masuk akal kalau pemilik ingin menyiapkan tautannya lebih dulu, sebelum artikelnya selesai ditulis. Tapi Fase 2B sudah memastikan draf membalas 404 kalau diakses langsung lewat URL publik (`Post::scopeTerbit()` disaring di level query). Kalau `bisaDiklik()` hanya mengecek `post_id` terisi, kartu akan mengarah ke tautan yang 404 — pengalaman yang jelas rusak, meski secara harfiah "post-nya tertaut".
 
 **Konsekuensi yang diterima.** Kartu dengan post draf tertaut tetap tampil sebagai "segera ditulis" sampai post itu diterbitkan — bukan sampai `post_id`-nya diisi. Begitu status post diubah jadi terbit, kartu otomatis jadi bisa diklik tanpa perlu menyunting project-nya lagi.
+
+## photos.gambar menyimpan basis nama, bukan path turunan (Fase 4)
+
+**Keputusan.** Kolom `photos.gambar` menyimpan basis nama gambar — direktori UUID tempat ketiga turunan berada, tanpa nama turunan, mis. `galeri/550e8400-…`. Ini berbeda dari `posts.cover` dan elemen `projects.gambar` yang menyimpan path satu turunan (thumb). Ketiga URL disusun lewat `TurunanGambar::urlDariBasis()`; `urlDari()` untuk path turunan (Post/Project) sekarang delegasi ke fungsi yang sama, jadi penurunan path antar-turunan tetap terjadi di satu tempat.
+
+**Kenapa.** Keputusan pemilik: kalau yang tersimpan path thumb, kode lain tergoda menebak turunan penuh lewat manipulasi string (`str_replace('thumb.webp', 'penuh.webp')`) — kebalikan dari alasan TurunanGambar dibuat. Dengan basis nama, tidak ada turunan tertentu yang "tersimpan", jadi tidak ada turunan lain yang bisa ditebak.
+
+**Konsekuensi yang diterima.** Kolom berisi direktori, bukan berkas, sehingga pratinjau native FileUpload Filament tidak bisa membacanya langsung. Formulir unggah (halaman Create dan aksi unggah massal) menyimpan path thumb sebagai nilai formulir sementara demi pratinjau, lalu mengubahnya jadi basis nama lewat `TurunanGambar::basisDari()` saat menulis ke basis data. Kolom gambar di tabel admin membaca URL thumb lewat `Photo::gambarUrls()`. Kalau nanti ada kebutuhan serupa di berkas lain, jangan tulis versi kedua — pakai TurunanGambar.

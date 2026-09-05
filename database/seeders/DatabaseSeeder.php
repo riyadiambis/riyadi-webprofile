@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             SiteTextSeeder::class,
             PostSeeder::class,
             ProjectSeeder::class,
+            PhotoSeeder::class,
         ]);
     }
 }

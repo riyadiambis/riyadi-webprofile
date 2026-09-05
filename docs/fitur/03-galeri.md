@@ -14,6 +14,11 @@ Fase roadmap: 4
 - Bisa dinavigasi maju mundur lewat tombol, tombol panah keyboard, dan geser di layar sentuh.
 - Pemuatan bertahap saat digulir, memakai ukuran thumbnail di grid.
 
+## Rincian pelaksanaan
+- Kolom `photos.gambar` menyimpan basis nama (direktori UUID tanpa nama turunan); ketiga URL disusun TurunanGambar. Alasannya di `docs/keputusan.md`.
+- Overlay lightbox dipasang sekali di layout publik dan dipakai bersama gambar artikel journal (Fase 2B). Foto galeri menambah tombol maju/mundur, panah keyboard, geser sentuh, dan caption; gambar artikel tetap tanpa keempatnya.
+- Grid memuat thumbnail bertahap: 8 ubin pertama `loading="eager"`, sisanya `loading="lazy"` native. Ukuran penuh baru dimuat saat foto dibuka.
+
 ## Kriteria lolos
 Dua puluh foto percobaan terbuka mulus di HP, grid hanya memuat ukuran kecil, ukuran penuh baru dimuat saat foto dibuka.
 
