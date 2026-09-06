@@ -99,3 +99,11 @@ php artisan filament:assets
 **Jebakan yang perlu diketahui.** Ini bukan teori — sempat benar-benar menjebak. Screenshot lewat `--window-size=390` menunjukkan teks dan tombol terpotong di tepi kanan, konsisten dan bisa diulang di beberapa kali pengambilan, cukup meyakinkan sampai dilaporkan ke pemilik sebagai bug nyata lengkap dengan dugaan akar masalah (flex `min-width: auto` pada slider). Setelah pemilik minta pembuktian akar masalah sebelum memperbaiki, pengukuran ulang lewat CDP (`document.documentElement.scrollWidth` vs `window.innerWidth`, ditambah `Page.getLayoutMetrics`, ditambah screenshot dari sesi CDP yang sama) di kelima halaman publik menunjukkan **nol overflow** di semuanya. Bug yang dilaporkan sebelumnya adalah artefak alat ukur, bukan cacat kode — jangan mengejar bug hantu yang sama lagi kalau `--window-size` menunjukkan sesuatu yang terlihat terpotong di HP.
 
 **Konsekuensi yang diterima.** Verifikasi lebar HP butuh skrip CDP (Node.js, `WebSocket` dan `fetch` bawaan, tanpa paket tambahan) alih-alih satu baris perintah `chrome --screenshot`. Sedikit lebih rumit untuk dijalankan, tapi hasilnya bisa dipercaya.
+
+## Galeri di beranda memakai "id menurun", bukan `urutan` manual (Fase 5)
+
+**Keputusan.** Bagian galeri di beranda (`BerandaController::index()`) mengambil foto lewat `Photo::orderByDesc('id')->limit(12)`, bukan `orderBy('urutan')` yang dipakai grid `/galeri`.
+
+**Kenapa.** Bagian itu berlabel "Galeri terbaru" — maksudnya benar-benar foto yang paling baru ditambahkan. Kolom `urutan` di `photos` adalah pengurutan manual milik pemilik untuk tata letak grid penuh di `/galeri` (bisa diseret bebas, tidak berkorelasi dengan kapan foto diunggah), jadi memakainya di sini akan menampilkan foto-foto sesuai urutan pilihan pemilik, bukan yang terbaru — dua konsep berbeda yang kebetulan sama-sama berupa angka.
+
+**Konsekuensi yang diterima.** Kalau pemilik mengurutkan ulang grid `/galeri` secara manual, bagian "Galeri terbaru" di beranda tidak ikut berubah urutannya — itu memang dimaksudkan, karena keduanya menjawab pertanyaan berbeda ("apa yang baru" vs "urutan tampilan pilihan pemilik").

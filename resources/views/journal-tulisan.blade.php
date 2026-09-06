@@ -1,5 +1,8 @@
 @extends('layouts.publik')
 
+{{-- Journal tidak ikut dwibahasa, lihat docs/fitur/05-dwibahasa.md. --}}
+@section('lang', 'id')
+
 @section('judul', $post->judul)
 
 @section('konten')
@@ -16,7 +19,7 @@
         @endif
 
         <p class="label-bagian">
-            {{ $post->terbit_pada?->locale('id')->translatedFormat('d F Y') }}
+            {{ $post->tanggalTerbit() }}
         </p>
 
         <h1 class="font-judul text-3xl md:text-4xl font-semibold mt-3 leading-tight">

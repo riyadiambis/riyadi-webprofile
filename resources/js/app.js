@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tombolSesudah = overlay.querySelector('[data-lightbox-sesudah]');
     const tombolTutup = overlay.querySelector('[data-lightbox-close]');
 
+    // Elemen latar (header, main, footer) — semua anak <body> selain
+    // overlay itu sendiri. Dibuat inert saat overlay terbuka supaya
+    // Tab tidak bisa menembus ke tautan/tombol di belakangnya.
+    const elemenLatar = [...document.body.children].filter((el) => el !== overlay);
+
     let grup = [];
     let indeks = 0;
     let fokusSemula = null;
@@ -52,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
         overlay.removeAttribute('inert');
+        elemenLatar.forEach((el) => el.setAttribute('inert', ''));
         document.body.classList.add('overflow-hidden');
         tombolTutup.focus();
     }
@@ -60,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.classList.add('hidden');
         overlay.classList.remove('flex');
         overlay.setAttribute('inert', '');
+        elemenLatar.forEach((el) => el.removeAttribute('inert'));
         gambar.src = '';
         tautanPenuh.href = '';
         document.body.classList.remove('overflow-hidden');

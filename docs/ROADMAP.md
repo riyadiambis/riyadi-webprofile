@@ -10,19 +10,21 @@ Aturan kerja:
 
 ## Pemetaan fase ke berkas fitur
 
-| Fase | Berkas fitur | Branch | PR |
-|---|---|---|---|
-| 0 — Persiapan | tidak ada, dikerjakan pemilik di luar kode | — | — |
-| 1 — Fondasi | `docs/fitur/00-fondasi.md` | `fase-1-fondasi` | 1 |
-| 2A — Journal, panel admin | `docs/fitur/01a-journal-admin.md` | `fase-2a-journal-admin` | 1 |
-| 2B — Journal, halaman publik | `docs/fitur/01b-journal-publik.md` | `fase-2b-journal-publik` | 1 |
-| 3 — Project | `docs/fitur/02-project.md` | `fase-3-project` | 1 |
-| 4 — Galeri | `docs/fitur/03-galeri.md` | `fase-4-galeri` | 1 |
-| 5 — Beranda | `docs/fitur/04-beranda.md` dan `docs/fitur/05-dwibahasa.md` | `fase-5-beranda` | 1 |
-| 6 — Deploy | `docs/fitur/06-deploy.md` | `fase-6-deploy` | 1 |
-| 7 — Poles | `docs/fitur/07-poles.md` | `fase-7-poles` | 1 |
+| Fase | Status | Berkas fitur | Branch | PR |
+|---|---|---|---|---|
+| 0 — Persiapan | Belum dikerjakan | tidak ada, dikerjakan pemilik di luar kode | — | — |
+| 1 — Fondasi | Selesai | `docs/fitur/00-fondasi.md` | `fase-1-fondasi` | #2 |
+| 2A — Journal, panel admin | Selesai | `docs/fitur/01a-journal-admin.md` | `fase-2a-journal-admin` | #3 |
+| 2B — Journal, halaman publik | Selesai | `docs/fitur/01b-journal-publik.md` | `fase-2b-journal-publik` | #4 |
+| 3 — Project | Selesai | `docs/fitur/02-project.md` | `fase-3-project` | #5 |
+| 4 — Galeri | Selesai | `docs/fitur/03-galeri.md` | `fase-4-galeri`, `fase-4-perbaikan-lightbox` | #6, #7 |
+| 5 — Beranda | Selesai | `docs/fitur/04-beranda.md` dan `docs/fitur/05-dwibahasa.md` | `fase-5-beranda`, `tombol-sosial` | #8, #9, #10 |
+| 6 — Deploy | Belum dikerjakan | `docs/fitur/06-deploy.md` | `fase-6-deploy` | — |
+| 7 — Poles | Belum dikerjakan | `docs/fitur/07-poles.md` | `fase-7-poles` | — |
 
-Fase 2 dipecah jadi 2A dan 2B karena cakupannya terlalu besar untuk satu sesi kerja: 2A menutup panel admin dan pipeline media, 2B menutup halaman publik. 2B baru dikerjakan setelah 2A selesai dan ter-merge. Fase 5 dilayani dua berkas fitur karena dwibahasa hanya masuk akal dikerjakan bersamaan dengan beranda. Keduanya tetap satu branch dan satu pull request.
+Fase 2 dipecah jadi 2A dan 2B karena cakupannya terlalu besar untuk satu sesi kerja: 2A menutup panel admin dan pipeline media, 2B menutup halaman publik. 2B baru dikerjakan setelah 2A selesai dan ter-merge. Fase 5 dilayani dua berkas fitur karena dwibahasa hanya masuk akal dikerjakan bersamaan dengan beranda. Keduanya tetap satu branch dan satu pull request — kolom PR di atas menghitung PR susulan (perbaikan bug, koreksi tampilan) yang lahir setelah PR utama fase itu merge, bukan pelanggaran aturan "satu fase satu PR" pada saat fase itu pertama kali dikerjakan.
+
+Audit menyeluruh atas Fase 1–5 dilakukan sebelum lanjut ke Fase 6. Temuan yang berupa keputusan implementasi dicatat di `docs/keputusan.md`; perbaikannya masuk PR `perbaikan-audit`, di luar penomoran fase karena lintas-fase.
 
 ---
 

@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+{{--
+    Atribut lang ikut bahasa aktif secara default, tapi journal dan
+    galeri MENGUNCI 'id' lewat @section('lang', 'id') di masing-masing
+    view — isinya memang tidak ikut berubah saat bahasa dialihkan,
+    lihat docs/fitur/05-dwibahasa.md. Beranda dan /project tetap
+    mengikuti app()->getLocale() karena isinya sungguhan berubah.
+--}}
+<html lang="{{ str_replace('_', '-', $__env->yieldContent('lang', app()->getLocale())) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

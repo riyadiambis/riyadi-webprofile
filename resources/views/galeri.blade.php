@@ -1,5 +1,8 @@
 @extends('layouts.publik')
 
+{{-- Galeri tidak ikut dwibahasa, lihat docs/fitur/05-dwibahasa.md. --}}
+@section('lang', 'id')
+
 @section('judul', 'Galeri')
 
 @section('konten')

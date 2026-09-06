@@ -48,18 +48,23 @@ class RendererKonten
 
     /**
      * Setiap <img> dibungkus tombol pemicu lightbox. src gambar yang
-     * tersimpan selalu turunan `sedang` (lihat PipelineGambar dan
-     * PostForm di Fase 2A), turunan `penuh` untuk lightbox diturunkan
-     * dengan mengganti nama berkas karena keduanya bertetangga di
-     * direktori yang sama.
+     * tersimpan di HTML adalah URL ke turunan `sedang` (lihat
+     * PipelineGambar dan PostForm di Fase 2A) — bisa root-relatif
+     * (`/storage/...`) atau absolut (`https://host/storage/...`)
+     * tergantung konteks saat disimpan. Turunan `penuh` untuk
+     * lightbox disusun lewat TurunanGambar, bukan ditebak lewat
+     * manipulasi nama berkas — aturan yang sudah tertulis di docblock
+     * TurunanGambar sendiri. Segmen `/storage/` dipakai sebagai
+     * penanda tetap untuk melepas host/skema, bukan menebak isi path
+     * di baliknya; itu tetap kerja TurunanGambar.
      */
     private function transformasiGambar(DOMDocument $dom, DOMElement $body): void
     {
         foreach (iterator_to_array($body->getElementsByTagName('img')) as $img) {
-            $sedang = $img->getAttribute('src');
-            $penuh = str_contains($sedang, '/sedang.webp')
-                ? str_replace('/sedang.webp', '/penuh.webp', $sedang)
-                : $sedang;
+            $src = $img->getAttribute('src');
+            $pathTersimpan = preg_match('#/storage/(.+)$#', $src, $cocok) ? $cocok[1] : null;
+
+            $penuh = $pathTersimpan ? TurunanGambar::urlDari($pathTersimpan)['penuh'] : $src;
             $alt = $img->getAttribute('alt');
 
             $img->setAttribute('class', 'block w-full h-auto');
