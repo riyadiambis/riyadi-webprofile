@@ -22,6 +22,7 @@ Urutan wewenang jika terjadi perbedaan:
 2. `docs/PRD.md` — konteks, keputusan teknis, model data, kriteria selesai.
 3. `docs/ROADMAP.md` — urutan pengerjaan dan pemetaan fase ke berkas fitur.
 4. `docs/design-tokens.md` — seluruh nilai visual.
+5. `docs/keputusan.md` — keputusan implementasi yang tidak masuk PRD/ROADMAP tapi mengikat (mis. aturan penurunan path gambar, satu titik locale). Baca sebelum menyentuh area yang sudah pernah dikoreksi di sana, supaya tidak mengulang kesalahan yang sudah dicatat.
 
 Kalau kode dan dokumen berbeda, dokumen yang benar. Kalau dokumen sendiri yang keliru, perbaiki dokumennya dalam PR yang sama, jangan diam-diam menyimpang.
 

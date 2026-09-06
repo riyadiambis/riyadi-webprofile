@@ -18,7 +18,7 @@
 
     <div class="flex flex-1 flex-col p-5">
         <p class="label-bagian">
-            {{ $post->terbit_pada?->locale('id')->translatedFormat('d F Y') }}
+            {{ $post->tanggalTerbit() }}
         </p>
         <h2 class="font-judul text-xl font-semibold mt-2 leading-snug group-hover:text-accent-alt transition-colors">
             {{ $post->judul }}

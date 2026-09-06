@@ -3,7 +3,7 @@
 Fase roadmap: 5. Dikerjakan setelah tiga fitur konten selesai karena memanggil datanya.
 
 ## Susunan dari atas ke bawah
-1. Perkenalan: foto, nama, satu paragraf tentang diri, tautan ke LinkedIn, GitHub, TikTok, Instagram, email.
+1. Perkenalan: foto, nama, satu paragraf tentang diri, tautan ke email, LinkedIn, GitHub, TikTok, Instagram, YouTube.
 2. Project pilihan: slider horizontal berisi project yang `dipin`.
 3. Tulisan pilihan: slider horizontal berisi post yang `dipin`.
 4. Galeri: slider horizontal berisi foto terbaru.

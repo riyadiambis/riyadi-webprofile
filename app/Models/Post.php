@@ -74,4 +74,17 @@ class Post extends Model
     {
         return $this->cover ? TurunanGambar::urlDari($this->cover) : null;
     }
+
+    /**
+     * Tanggal terbit yang dirender publik, dikunci ke locale Indonesia
+     * di satu tempat ini — bukan app()->getLocale(). Journal tidak
+     * ikut dwibahasa (docs/fitur/05-dwibahasa.md), jadi tanggalnya
+     * tidak boleh ikut berubah saat pengalih bahasa ditekan, meski
+     * app()->setLocale('en') dari SetLocale ikut menyebar ke Carbon.
+     * Dipakai kartu-post dan halaman tulisan, satu tempat saja.
+     */
+    public function tanggalTerbit(): ?string
+    {
+        return $this->terbit_pada?->locale('id')->translatedFormat('d F Y');
+    }
 }

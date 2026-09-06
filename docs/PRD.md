@@ -124,7 +124,7 @@ Opsional, dikerjakan di fase akhir. Tidak boleh menghambat fase lain.
 
 Bagian dari atas ke bawah:
 
-1. **Perkenalan.** Foto, nama, satu paragraf tentang diri, tautan ke LinkedIn, GitHub, TikTok, Instagram, email.
+1. **Perkenalan.** Foto, nama, satu paragraf tentang diri, tautan ke email, LinkedIn, GitHub, TikTok, Instagram, YouTube.
 2. **Project pilihan.** Slider horizontal berisi kartu project yang ditandai `dipin`. Bisa digeser dengan sentuhan di HP dan tombol panah di desktop.
 3. **Tulisan pilihan.** Slider horizontal berisi post yang ditandai `dipin`.
 4. **Galeri.** Slider horizontal berisi foto terbaru dari galeri.
