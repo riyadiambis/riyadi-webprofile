@@ -107,3 +107,25 @@ php artisan filament:assets
 **Kenapa.** Bagian itu berlabel "Galeri terbaru" — maksudnya benar-benar foto yang paling baru ditambahkan. Kolom `urutan` di `photos` adalah pengurutan manual milik pemilik untuk tata letak grid penuh di `/galeri` (bisa diseret bebas, tidak berkorelasi dengan kapan foto diunggah), jadi memakainya di sini akan menampilkan foto-foto sesuai urutan pilihan pemilik, bukan yang terbaru — dua konsep berbeda yang kebetulan sama-sama berupa angka.
 
 **Konsekuensi yang diterima.** Kalau pemilik mengurutkan ulang grid `/galeri` secara manual, bagian "Galeri terbaru" di beranda tidak ikut berubah urutannya — itu memang dimaksudkan, karena keduanya menjawab pertanyaan berbeda ("apa yang baru" vs "urutan tampilan pilihan pemilik").
+
+## PipelineGambar wajib gagal bersuara, tidak boleh mengembalikan path berkas hantu (perbaikan pasca-Fase 5)
+
+**Keputusan.** `PipelineGambar::proses()` memeriksa **setiap** penulisan berkas sebelum path-nya boleh dikembalikan: nilai balik `makeDirectory()`, nilai balik `imagewebp()`, lalu keberadaan dan ukuran berkas hasilnya di disk. Kegagalan mana pun melempar `RuntimeException` berpesan jelas, dan direktori yang terlanjur berisi turunan setengah jadi dihapus lebih dulu. Jaminannya: **kalau `proses()` mengembalikan path, ketiga berkasnya sudah ada dan berisi.**
+
+**Kenapa.** Sebelum ini tidak ada satu pun pemeriksaan. `imagewebp()` mengembalikan `false` tanpa memicu exception kalau tujuannya tidak bisa ditulis, dan kedua disk di `config/filesystems.php` menyetel `'throw' => false` sehingga kegagalan di level Flysystem juga senyap. Akibatnya pemanggil — seeder maupun `FileUpload` Filament — tetap menerima array path yang tampak wajar dan menyimpannya ke basis data seolah berhasil. Basis data jadi menunjuk berkas yang tidak pernah ditulis, dan tidak ada satu pun galat yang muncul di mana pun.
+
+**Gejalanya di lapangan.** Seluruh gambar galeri, sampul journal, dan gambar project tidak tampil — hanya teks `alt`. `storage/app/public` kosong total padahal 20 baris `photos`, satu `posts.cover`, dan empat elemen `projects.gambar` menunjuk ke sana. Seperti kasus aset Filament di atas, **smoke test tidak menangkap ini sama sekali**: halaman tetap membalas 200, yang rusak hanya isinya.
+
+**Yang tidak bisa dibuktikan, dan sengaja tidak diklaim.** Apakah seed 6 September itu gagal menulis secara senyap, atau berkasnya sempat ditulis lalu terhapus belakangan, **tidak bisa dipastikan lagi** dari bukti yang tersisa. Yang pasti dan yang diperbaiki adalah cacatnya: kode lama tidak bisa membedakan keduanya, karena tidak pernah memeriksa. Unggahan lewat panel pada 7 September berkasnya utuh — pipeline-nya sendiri berfungsi. Jangan menulis ulang sejarah ini jadi "seed-nya yang rusak"; buktinya tidak sampai ke sana.
+
+**Konsekuensi yang diterima.** Unggahan yang gagal sekarang menggagalkan penyimpanan record-nya, bukan menyimpan record dengan gambar rusak. Itu memang yang diinginkan. Baris hantu yang sudah telanjur ada sejak sebelum perbaikan ini tidak ikut dibersihkan otomatis — satu-satunya cara membereskannya adalah `migrate:fresh --seed`, yang juga menghapus isi yang diketik manual lewat panel. Jangan jalankan itu tanpa persetujuan pemilik.
+
+## Rute `/storage/` bawaan Laravel dimatikan supaya berkas hilang membalas 404, bukan 403 (perbaikan pasca-Fase 5)
+
+**Keputusan.** Disk `local` di `config/filesystems.php` disetel `'serve' => false`.
+
+**Kenapa.** Dengan `'serve' => true` (nilai bawaan stub Laravel), `FilesystemServiceProvider` mendaftarkan rute `GET /storage/{path}` bernama `storage.local` untuk disk itu — **URI yang persis sama** dengan symlink `public/storage` milik disk `public`. Dua mekanisme berbeda berebut satu prefix. Disk `local` menyimpan berkas privat (`storage/app/private`) dan tidak pernah disajikan lewat HTTP, jadi rutenya memang tidak dibutuhkan.
+
+**Jebakan yang perlu diketahui — ini sempat menyesatkan diagnosis.** Berkas yang benar-benar ada tidak pernah menyentuh rute itu: web server (juga server bawaan `php artisan serve` lewat `file_exists()` di `server.php`) menyajikannya lebih dulu. Yang jatuh ke rute itu hanya berkas yang **tidak** ada — dan `ServeFile` menjawabnya **403 Forbidden**, bukan 404, karena `visibility` disk `local` bukan `public` dan permintaannya tidak bertanda tangan. Efeknya: berkas hilang menyamar jadi masalah izin akses. Saat menelusuri gambar yang tidak tampil, 403 itu mengarahkan dugaan ke symlink dan hak akses berkas — padahal berkasnya memang tidak pernah ada. Kalau suatu saat ada yang menghidupkan `serve` lagi untuk disk mana pun, pastikan URI-nya tidak menabrak `/storage/` milik disk `public`.
+
+**Konsekuensi yang diterima.** Tidak ada rute aplikasi yang melayani `/storage/`; seluruhnya bergantung pada symlink `public/storage` yang dibuat `php artisan storage:link`. Kalau symlink itu hilang, gambar mati total dan jawabannya 404 — bukan lagi 403 yang membingungkan. Berkas privat di disk `local` tidak punya cara disajikan lewat HTTP sama sekali; kalau suatu saat dibutuhkan (mis. unduhan bertanda tangan), hidupkan `serve` dengan `url` sendiri yang berbeda dari `/storage`.

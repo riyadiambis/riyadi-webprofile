@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 /**
  * Mengubah satu gambar unggahan menjadi tiga turunan WebP nyata: thumb,
@@ -26,6 +27,14 @@ use RuntimeException;
  * tidak diperbesar. Ekstensi exif tidak aktif di lingkungan
  * pengembangan, jadi orientasi foto dari kamera HP tidak dikoreksi
  * otomatis di fase ini.
+ *
+ * JAMINAN: kalau proses() mengembalikan path, ketiga berkasnya SUDAH ADA
+ * dan berisi di disk. Setiap kegagalan penulisan melempar
+ * RuntimeException, dan direktori yang terlanjur berisi turunan setengah
+ * jadi dihapus lebih dulu. Pemanggil karena itu tidak pernah menerima
+ * path berkas yang tidak pernah ditulis — lihat docs/keputusan.md.
+ * Jangan melunakkan ini jadi peringatan atau nilai balik null: kegagalan
+ * senyap di sinilah yang dulu mengisi basis data dengan path hantu.
  */
 class PipelineGambar
 {
@@ -51,25 +60,86 @@ class PipelineGambar
         $sumber = $this->pastikanTrueColor($sumber);
         $direktoriDasar = $direktori ?? config('media.direktori');
         $direktori = $direktoriDasar.'/'.(string) Str::uuid();
+        $disk = Storage::disk(config('media.disk'));
 
-        Storage::disk(config('media.disk'))->makeDirectory($direktori);
+        if (! $disk->makeDirectory($direktori)) {
+            imagedestroy($sumber);
+
+            throw new RuntimeException(
+                "Gagal membuat direktori turunan [{$direktori}] di disk '".config('media.disk')."'."
+            );
+        }
 
         $path = [];
 
-        foreach (config('media.turunan') as $nama => $lebarTarget) {
-            $turunan = $this->skalakan($sumber, $lebarTarget);
-            $relatif = "{$direktori}/{$nama}.webp";
-            $absolut = Storage::disk(config('media.disk'))->path($relatif);
+        try {
+            foreach (config('media.turunan') as $nama => $lebarTarget) {
+                $relatif = "{$direktori}/{$nama}.webp";
+                $absolut = $disk->path($relatif);
+                $turunan = $this->skalakan($sumber, $lebarTarget);
 
-            imagewebp($turunan, $absolut, config('media.kualitas_webp'));
-            imagedestroy($turunan);
+                try {
+                    // Warning bawaan imagewebp() dibungkam supaya pesan yang
+                    // sampai ke pemanggil adalah pesan jelas dari
+                    // pastikanTertulis(), bukan ErrorException hasil konversi
+                    // warning oleh penangan galat Laravel di konteks web.
+                    $berhasil = @imagewebp($turunan, $absolut, config('media.kualitas_webp'));
+                } finally {
+                    imagedestroy($turunan);
+                }
 
-            $path[$nama] = $relatif;
+                $this->pastikanTertulis($berhasil, $absolut, $relatif);
+
+                $path[$nama] = $relatif;
+            }
+        } catch (Throwable $e) {
+            // Jangan tinggalkan direktori berisi turunan setengah jadi:
+            // yang gagal sebagian sama tidak berlakunya dengan yang gagal
+            // seluruhnya, karena pemanggil butuh ketiganya. Menangkap
+            // Throwable, bukan RuntimeException saja — kegagalan GD bisa
+            // sampai ke sini sebagai ErrorException di konteks web.
+            $disk->deleteDirectory($direktori);
+
+            throw $e;
+        } finally {
+            imagedestroy($sumber);
         }
 
-        imagedestroy($sumber);
-
         return $path;
+    }
+
+    /**
+     * Memastikan satu turunan benar-benar mendarat di disk sebagai berkas
+     * berisi. Dipanggil setelah setiap penulisan, sebelum path-nya boleh
+     * ikut dikembalikan ke pemanggil.
+     *
+     * Nilai balik imagewebp() saja tidak cukup dijadikan bukti: ia
+     * mengembalikan false tanpa memicu exception apa pun kalau tujuannya
+     * tidak bisa ditulis, dan sebaliknya bisa mengembalikan true sambil
+     * meninggalkan berkas nol byte kalau penulisan terputus di tengah.
+     * Keduanya diperiksa terpisah.
+     *
+     * @throws RuntimeException kalau berkas gagal ditulis atau kosong
+     */
+    private function pastikanTertulis(bool $berhasil, string $absolut, string $relatif): void
+    {
+        // Hasil stat berkas yang baru ditulis bisa terlayani dari cache
+        // PHP kalau path yang sama sempat di-stat sebelumnya.
+        clearstatcache(true, $absolut);
+
+        if (! $berhasil) {
+            throw new RuntimeException(
+                "Gagal menulis turunan [{$relatif}]: imagewebp() mengembalikan false. "
+                .'Periksa izin tulis dan ruang kosong disk.'
+            );
+        }
+
+        if (! is_file($absolut) || filesize($absolut) < 1) {
+            throw new RuntimeException(
+                "Turunan [{$relatif}] dilaporkan berhasil ditulis tapi berkasnya "
+                .'tidak ada atau kosong di disk. Periksa ruang kosong disk.'
+            );
+        }
     }
 
     private function pastikanTrueColor(GdImage $gambar): GdImage
