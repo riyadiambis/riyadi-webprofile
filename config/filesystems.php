@@ -30,10 +30,23 @@ return [
 
     'disks' => [
 
+        /*
+         | 'serve' SENGAJA dimatikan. Kalau dihidupkan, Laravel
+         | mendaftarkan rute bawaan `GET /storage/{path}` untuk disk ini
+         | — URI yang sama dengan symlink public/storage milik disk
+         | 'public' di bawah. Berkas yang benar-benar ada tetap tersaji
+         | (web server menyajikannya lebih dulu, permintaan tidak pernah
+         | sampai ke Laravel), tapi berkas yang TIDAK ada jatuh ke rute
+         | itu dan dijawab 403 Forbidden, bukan 404 — karena visibility
+         | disk ini private dan permintaannya tidak bertanda tangan.
+         | Disk ini menyimpan berkas privat dan tidak pernah disajikan
+         | lewat HTTP, jadi rutenya memang tidak dibutuhkan.
+         | Lihat docs/keputusan.md.
+         */
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],
