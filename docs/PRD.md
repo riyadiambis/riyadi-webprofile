@@ -112,6 +112,20 @@ Server berada di kosan dengan koneksi rumahan. Jika listrik atau internet mati, 
 | nilai_id | text | versi bahasa Indonesia |
 | nilai_en | text, nullable | versi bahasa Inggris |
 
+### `profiles` (profil pemilik di beranda)
+| Kolom | Tipe | Catatan |
+|---|---|---|
+| id | integer | |
+| foto | string, nullable | path turunan thumb foto profil. Kosong berarti beranda menampilkan kotak inisial |
+| email | string, nullable | dipakai tombol Email dan tombol "Kirim email" di penutup |
+| linkedin | string, nullable | |
+| github | string, nullable | |
+| tiktok | string, nullable | |
+| instagram | string, nullable | |
+| youtube | string, nullable | |
+
+Satu baris saja. Tautan yang dikosongkan tidak dirender di beranda — tombolnya hilang, bukan tampil mati. Tabel ini menggantikan `config/site.php` yang dipensiunkan, supaya pemilik bisa mengubah foto dan tautan lewat panel tanpa deploy ulang.
+
 ### `users`
 Satu baris saja, akun pemilik. Bawaan Laravel, tanpa pendaftaran publik.
 
@@ -124,9 +138,9 @@ Opsional, dikerjakan di fase akhir. Tidak boleh menghambat fase lain.
 
 Bagian dari atas ke bawah:
 
-1. **Perkenalan.** Foto, nama, satu paragraf tentang diri, tautan ke email, LinkedIn, GitHub, TikTok, Instagram, YouTube.
-2. **Project pilihan.** Slider horizontal berisi kartu project yang ditandai `dipin`. Bisa digeser dengan sentuhan di HP dan tombol panah di desktop.
-3. **Tulisan pilihan.** Slider horizontal berisi post yang ditandai `dipin`.
+1. **Perkenalan.** Foto, nama, satu paragraf tentang diri, tautan ke email, LinkedIn, GitHub, TikTok, Instagram, YouTube. Foto dan keenam tautan diambil dari tabel `profiles`, disunting lewat halaman Beranda di panel. Tautan yang kosong tidak dirender.
+2. **Project unggulan.** Slider horizontal berisi kartu project yang ditandai `dipin`. Bisa digeser dengan sentuhan di HP dan tombol panah di desktop.
+3. **Tulisan unggulan.** Slider horizontal berisi post yang ditandai `dipin`.
 4. **Galeri.** Slider horizontal berisi foto terbaru dari galeri.
 5. **Penutup.** Ajakan menghubungi dan tautan ke halaman kontak/email.
 
@@ -160,13 +174,15 @@ Grid rapat bergaya Instagram. Foto diklik membuka tampilan besar berisi foto dan
 Disediakan Filament. Isi minimal:
 - CRUD posts dengan editor teks kaya, unggah gambar di dalam tulisan, tombol sematan YouTube, pengaturan status draf/terbit dan penanda pin.
 - CRUD projects dengan unggah banyak gambar, pemilihan tulisan yang ditautkan, dan kolom ringkasan Indonesia serta Inggris bersebelahan. Nama project hanya satu kolom.
-- Pengelolaan teks beranda (`site_texts`) dengan pola dua kolom bahasa yang sama.
+- **Satu** halaman "Beranda" yang menampung seluruh isi beranda: foto profil, keenam tautan sosial, serta teks perkenalan dan penutup dengan pola dua kolom bahasa. Tidak boleh ada menu kedua untuk halaman publik yang sama.
 - CRUD photos dengan unggah banyak berkas sekaligus dan pengurutan.
-- Login satu akun.
+- Login satu akun, dengan tautan kembali ke situs di halaman login.
+
+Halaman Beranda menggantikan Dasbor bawaan Filament: setelah login, pemilik mendarat langsung di sana.
 
 ### 7.6 Dwibahasa terbatas
 
-Cakupan: teks perkenalan dan penutup di beranda, serta ringkasan project. Nama project tidak diterjemahkan dan tidak punya kolom `nama_en`. Tidak mencakup isi artikel journal dan caption galeri.
+Cakupan: teks perkenalan dan penutup di beranda, ringkasan project, serta **judul bagian dan label di halaman beranda** (lewat berkas `lang/`, bukan basis data). Nama project tidak diterjemahkan dan tidak punya kolom `nama_en`. Tidak mencakup isi artikel journal, caption galeri, navigasi header, dan halaman selain beranda.
 
 Aturan:
 - Pengisian sepenuhnya manual. Tidak ada terjemahan otomatis, tidak ada panggilan ke layanan penerjemah.

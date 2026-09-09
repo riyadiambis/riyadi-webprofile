@@ -15,7 +15,16 @@ class ProjectForm
 {
     public static function configure(Schema $schema): Schema
     {
+        /*
+         | Satu kolom eksplisit di akar: keempat Section ditumpuk selebar
+         | penuh. Sebelumnya menumpang default Filament, jadi Section
+         | berpasangan dua kolom dan tingginya tidak pernah sejajar —
+         | sisi kanan menyisakan ruang kosong panjang. Bagian Gambar
+         | ikut mendapat lebar penuh karena itu yang paling sering
+         | dipakai.
+         */
         return $schema
+            ->columns(1)
             ->components([
                 Section::make()
                     ->schema([
@@ -23,9 +32,22 @@ class ProjectForm
                             ->required()
                             ->maxLength(255)
                             ->columnSpan(2),
+                        /*
+                         | Batas tahun yang masuk akal, diminta pemilik:
+                         | 2000 sampai tahun berjalan ditambah satu (satu
+                         | tahun ke depan supaya project yang dijadwalkan
+                         | tetap bisa dicatat). Batas atasnya dihitung per
+                         | permintaan, jadi ikut bergeser sendiri tiap
+                         | pergantian tahun tanpa perlu disunting.
+                         | Kolomnya tetap string, tidak ada migrasi baru.
+                         */
                         TextInput::make('tahun')
                             ->required()
-                            ->maxLength(4),
+                            ->numeric()
+                            ->minValue(2000)
+                            ->maxValue(now()->year + 1)
+                            ->maxLength(4)
+                            ->helperText('Antara 2000 dan '.(now()->year + 1).'.'),
                     ])
                     ->columns(3),
 

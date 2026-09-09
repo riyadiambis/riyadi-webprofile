@@ -25,6 +25,16 @@ Pengalih bahasa menyimpan pilihan di cookie `bahasa` dan HTML halaman berubah me
 - Kalau suatu saat cache HTML diaktifkan (misalnya aturan "Cache Everything"), cookie `bahasa` wajib masuk cache key, atau halaman `/` dikecualikan dari cache. Tanpa itu pengunjung bisa menerima HTML berbahasa lain dari cache bersama.
 - `view:cache` dan `route:cache` aman dipakai: template Blade dan tabel rute tidak bergantung bahasa — bahasa aktif ditentukan per permintaan oleh middleware `SetLocale`, bukan dibekukan saat kompilasi.
 
+## Peringatan: `migrate:fresh --seed` menghapus isi yang diketik pemilik
+
+Sejak `config/site.php` dipensiunkan, isi beranda **bukan lagi nilai di dalam berkas yang ikut ter-deploy**. Foto profil, keenam tautan sosial (tabel `profiles`), serta teks perkenalan dan penutup (tabel `site_texts`) hidup di basis data dan hanya diisi lewat panel.
+
+Akibatnya `php artisan migrate:fresh --seed` **menghapus semuanya** dan mengembalikannya ke hasil seed — yang sengaja hampir kosong: hanya tautan YouTube, tanpa email, tanpa foto profil. Bersama seluruh post, project, dan foto.
+
+- Jangan pernah menjalankannya di server. Untuk perubahan skema, pakai `php artisan migrate` biasa.
+- Kalau tetap harus membangun ulang basis data, salin berkas SQLite-nya lebih dulu — skrip backup harian di bagian Cakupan sudah menyalinnya, tapi backup terakhir bisa berumur sampai sehari.
+- Hal yang sama berlaku di laptop: `migrate:fresh --seed` mengembalikan lingkungan pengembangan ke keadaan contoh, bukan keadaan yang sedang dikerjakan.
+
 ## Kriteria lolos
 Domain dibuka dari jaringan seluler menampilkan situs dengan HTTPS, panel admin tidak bisa dibuka dari luar, dan aplikasi hidup lagi sendiri setelah container di-restart.
 

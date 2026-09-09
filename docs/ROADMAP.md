@@ -26,6 +26,8 @@ Fase 2 dipecah jadi 2A dan 2B karena cakupannya terlalu besar untuk satu sesi ke
 
 Audit menyeluruh atas Fase 1–5 dilakukan sebelum lanjut ke Fase 6. Temuan yang berupa keputusan implementasi dicatat di `docs/keputusan.md`; perbaikannya masuk PR `perbaikan-audit`, di luar penomoran fase karena lintas-fase.
 
+Rombak panel admin (`docs/fitur/08-panel-beranda.md`, branch `panel-beranda`) juga di luar penomoran fase: diminta pemilik setelah audit selesai, dan bukan bagian dari rencana v1 yang asli. Isinya halaman Beranda tunggal di panel yang memensiunkan `config/site.php`, judul bagian beranda yang ikut dwibahasa, dan penataan ulang tata letak ketiga form. Nama branch di luar fase roadmap sengaja tidak memakai pola `fase-N-nama`, lihat `docs/keputusan.md`.
+
 ---
 
 ## Fase 0 — Persiapan di luar kode

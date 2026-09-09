@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\Post;
+use App\Models\Profile;
 use App\Models\Project;
 use App\Models\SiteText;
 use Illuminate\View\View;
@@ -26,7 +27,11 @@ class BerandaController extends Controller
             ->get()
             ->keyBy('kunci');
 
+        $profil = Profile::ambil();
+
         return view('beranda', [
+            'profil' => $profil,
+            'tautanSosial' => $profil->tautanSosial(),
             'perkenalan' => $teks->get('perkenalan'),
             'penutup' => $teks->get('penutup'),
             'projects' => Project::with('post')
