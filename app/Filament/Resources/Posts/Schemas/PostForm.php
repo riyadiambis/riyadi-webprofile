@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -23,7 +24,20 @@ class PostForm
 {
     public static function configure(Schema $schema): Schema
     {
+        /*
+         | Tata letak ditetapkan EKSPLISIT satu kolom di akar, jangan
+         | menumpang default Filament — default itu yang dulu membuat
+         | Section berpasangan dua kolom, kolom kiri habis di sepertiga
+         | atas lalu kosong panjang, dan editor konten terjepit di
+         | separuh lebar padahal itu tempat kerja utama.
+         |
+         | Susunan yang diminta pemilik, semuanya selebar layar dari
+         | atas ke bawah: Judul+Slug bersebelahan, Ringkasan, Sampul,
+         | lalu editor selebar penuh, lalu Tautan project dan Publikasi
+         | bersebelahan di baris bawah.
+         */
         return $schema
+            ->columns(1)
             ->components([
                 Section::make()
                     ->schema([
@@ -63,6 +77,10 @@ class PostForm
                         RichEditor::make('konten')
                             ->label('')
                             ->required()
+                            // Tempat kerja utama: tinggi dilebihkan dari
+                            // bawaan supaya tidak perlu menggulir sejak
+                            // paragraf pertama.
+                            ->extraInputAttributes(['style' => 'min-height: 32rem'])
                             ->fileAttachmentsDisk('public')
                             ->saveUploadedFileAttachmentUsing(function (TemporaryUploadedFile $file): string {
                                 return app(PipelineGambar::class)->proses($file)['sedang'];
@@ -74,38 +92,41 @@ class PostForm
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Tautan project')
-                    ->description('Opsional. Tombol muncul di posisi paling atas tulisan kalau diisi.')
+                // Baris bawah: dua Section bersebelahan, sama tinggi.
+                Grid::make(2)
                     ->schema([
-                        TextInput::make('tautan_project')
-                            ->label('URL')
-                            ->url(),
-                        TextInput::make('label_tautan')
-                            ->label('Label tombol')
-                            ->placeholder('Contoh: Lihat repo, Coba demo'),
-                    ])
-                    ->columns(2)
-                    ->collapsible(),
-
-                Section::make('Publikasi')
-                    ->schema([
-                        Select::make('status')
-                            ->options([
-                                'draf' => 'Draf',
-                                'terbit' => 'Terbit',
+                        Section::make('Tautan project')
+                            ->description('Opsional. Tombol muncul di posisi paling atas tulisan kalau diisi.')
+                            ->schema([
+                                TextInput::make('tautan_project')
+                                    ->label('URL')
+                                    ->url(),
+                                TextInput::make('label_tautan')
+                                    ->label('Label tombol')
+                                    ->placeholder('Contoh: Lihat repo, Coba demo'),
                             ])
-                            ->required()
-                            ->default('draf')
-                            ->live(),
-                        Toggle::make('dipin')
-                            ->label('Tampilkan di beranda')
-                            ->default(false),
-                        DateTimePicker::make('terbit_pada')
-                            ->label('Tanggal terbit')
-                            ->native(false)
-                            ->visible(fn (Get $get) => $get('status') === 'terbit'),
-                    ])
-                    ->columns(3),
+                            ->columns(1),
+
+                        Section::make('Publikasi')
+                            ->schema([
+                                Select::make('status')
+                                    ->options([
+                                        'draf' => 'Draf',
+                                        'terbit' => 'Terbit',
+                                    ])
+                                    ->required()
+                                    ->default('draf')
+                                    ->live(),
+                                Toggle::make('dipin')
+                                    ->label('Tampilkan di beranda')
+                                    ->default(false),
+                                DateTimePicker::make('terbit_pada')
+                                    ->label('Tanggal terbit')
+                                    ->native(false)
+                                    ->visible(fn (Get $get) => $get('status') === 'terbit'),
+                            ])
+                            ->columns(1),
+                    ]),
             ]);
     }
 }

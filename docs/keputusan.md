@@ -129,3 +129,44 @@ php artisan filament:assets
 **Jebakan yang perlu diketahui — ini sempat menyesatkan diagnosis.** Berkas yang benar-benar ada tidak pernah menyentuh rute itu: web server (juga server bawaan `php artisan serve` lewat `file_exists()` di `server.php`) menyajikannya lebih dulu. Yang jatuh ke rute itu hanya berkas yang **tidak** ada — dan `ServeFile` menjawabnya **403 Forbidden**, bukan 404, karena `visibility` disk `local` bukan `public` dan permintaannya tidak bertanda tangan. Efeknya: berkas hilang menyamar jadi masalah izin akses. Saat menelusuri gambar yang tidak tampil, 403 itu mengarahkan dugaan ke symlink dan hak akses berkas — padahal berkasnya memang tidak pernah ada. Kalau suatu saat ada yang menghidupkan `serve` lagi untuk disk mana pun, pastikan URI-nya tidak menabrak `/storage/` milik disk `public`.
 
 **Konsekuensi yang diterima.** Tidak ada rute aplikasi yang melayani `/storage/`; seluruhnya bergantung pada symlink `public/storage` yang dibuat `php artisan storage:link`. Kalau symlink itu hilang, gambar mati total dan jawabannya 404 — bukan lagi 403 yang membingungkan. Berkas privat di disk `local` tidak punya cara disajikan lewat HTTP sama sekali; kalau suatu saat dibutuhkan (mis. unduhan bertanda tangan), hidupkan `serve` dengan `url` sendiri yang berbeda dari `/storage`.
+
+## Alamat email dan tautan sosial pemilik tidak ditulis di seeder (rombak panel beranda)
+
+**Keputusan.** `ProfileSeeder` hanya mengisi satu nilai: `youtube`, satu-satunya alamat yang memang sudah asli sejak `config/site.php`. Email, LinkedIn, GitHub, TikTok, dan Instagram dikosongkan — bukan diisi contoh, bukan diisi alamat asli pemilik. Pemilik mengisinya sendiri lewat halaman Beranda di panel.
+
+**Kenapa.** Repositori ini **publik di GitHub**. Alamat email yang ditulis di seeder ikut terbit di sana selamanya, juga di seluruh riwayat git — dan berbeda dari alamat yang tampil di situs, alamat di dalam repo tidak bisa dicabut belakangan cukup dengan menyuntingnya. Isian contoh seperti `contoh@contoh.invalid` juga ditolak: itu yang dulu bocor ke halaman publik sebagai tombol mati.
+
+**Konsekuensi yang diterima.** Beranda hasil `migrate:fresh --seed` tampil tanpa tombol Email dan tanpa tombol "Kirim email" di bagian penutup sampai pemilik mengisinya lewat panel. Itu memang perilaku yang diinginkan — tautan kosong tidak dirender, jadi tidak ada tombol yang mengarah ke mana-mana. Hal yang sama berlaku untuk foto profil: beranda menampilkan kotak inisial sampai fotonya diunggah.
+
+## Nama branch di luar fase roadmap tidak mengikuti pola `fase-N-nama` (rombak panel beranda)
+
+**Keputusan.** Pekerjaan yang bukan bagian dari fase roadmap memakai nama branch deskriptif tanpa awalan `fase-N`, contohnya `panel-beranda` dan `perbaikan-audit`. Pola `fase-N-nama-singkat` di `CLAUDE.md` bagian "Alur kerja" berlaku khusus untuk fase yang terdaftar di `docs/ROADMAP.md`.
+
+**Kenapa.** Keputusan pemilik. Memaksakan nomor fase pada pekerjaan yang tidak ada di roadmap justru menyesatkan: nomornya tidak menunjuk ke apa pun di `ROADMAP.md`, dan urutannya bertabrakan dengan fase sungguhan yang belum dikerjakan.
+
+**Konsekuensi yang diterima.** Nama branch di repositori ini tidak seragam bentuknya. Dicatat di sini supaya perbedaan itu dikenali sebagai keputusan, bukan sebagai penyimpangan yang lolos — audit berikutnya tidak perlu melaporkannya lagi sebagai temuan.
+
+## Halaman Beranda di panel menyimpan ke dua tabel; `site_texts` tetap tabel sendiri (rombak panel beranda)
+
+**Keputusan.** Satu halaman panel ("Beranda") menyunting seluruh isi beranda dan menyimpannya ke **dua** tabel sekali simpan: `profiles` (satu baris: foto dan enam tautan sosial) dan `site_texts` (dua baris: `perkenalan` dan `penutup`). Menu "Teks beranda" yang dulu berdiri sendiri dihapus beserta seluruh `SiteTextResource`-nya, tapi tabelnya tidak diusik.
+
+**Kenapa.** Yang dikeluhkan pemilik adalah dua menu untuk satu halaman publik, bukan dua tabel. Melebur `site_texts` ke dalam `profiles` berarti migrasi data, membatalkan bagian model data di `PRD.md`, dan menghilangkan bentuk kunci–nilai yang justru pas kalau nanti ada teks dwibahasa ketiga. Menyatukannya di antarmuka sudah menyelesaikan keluhannya tanpa biaya itu.
+
+**Konsekuensi yang diterima.** Satu aksi simpan menyentuh dua tabel, jadi ada dua penulisan yang secara teori bisa terpisah kalau salah satunya gagal. Untuk situs satu pengguna dengan SQLite satu berkas, risiko itu diterima — tidak dibungkus transaksi supaya kodenya tetap terbaca lurus.
+
+## Halaman Beranda menggantikan Dasbor sebagai halaman utama panel (rombak panel beranda)
+
+**Keputusan.** `Dashboard::class` bawaan Filament tidak lagi didaftarkan di `AdminPanelProvider`, dan halaman `App\Filament\Pages\Beranda` menempati path `/` panel lewat override `getRoutePath()`. Widget `AccountWidget` dan `FilamentInfoWidget` ikut dilepas.
+
+**Kenapa.** Permintaan pemilik: setelah login harus langsung mendarat di tempat kerja, bukan di dasbor berisi kartu bawaan Filament yang tidak pernah dipakai.
+
+**Jebakan yang perlu diketahui.** Properti `protected static string $routePath = '/'` **saja tidak cukup** — Filament membacanya lewat metode statis `getRoutePath(Panel $panel)`, jadi metode itu yang harus di-override, persis seperti yang dilakukan kelas `Dashboard` bawaan. Tanpa override-nya, halaman tetap mendapat slug dari nama kelas (`/admin/beranda`) dan `/admin` hanya mengalihkan ke sana.
+
+**Konsekuensi yang diterima.** Panel tidak punya dasbor sama sekali. Kalau suatu saat butuh widget ringkasan, tempatnya di halaman Beranda ini, bukan dengan menghidupkan lagi Dasbor — dua halaman utama akan mengulang persoalan "dua menu" yang baru saja diselesaikan.
+## Bahasa khusus halaman dibaca dari variabel layout, bukan fungsi dwibahasa
+
+**Keputusan.** Variabel $bahasaHalaman ditentukan satu kali di bagian awal layouts/publik.blade.php, diambil dari properti slot atau fallback ke pp()->getLocale(). <html lang> dan fungsi __() di footer sama-sama membaca variabel ini, sehingga footer akan mengikuti bahasa yang dipaksakan oleh layout (misal id di halaman journal), bukan menebak-nebak locale aplikasi.
+
+**Kenapa.** Keputusan pemilik: penentuan bahasa harus dilakukan di satu titik yang eksplisit di layout, bukan menyembunyikannya sebagai "trik" di dalam pemanggilan fungsi terjemahan.
+
+**Konsekuensi yang diterima.** Setiap halaman yang ingin mengunci bahasanya (seperti /journal dan /galeri) harus melewatkan variabel ini ke layout (@extends('layouts.publik', ['bahasaHalaman' => 'id'])), alih-alih memakai @section('lang', 'id').

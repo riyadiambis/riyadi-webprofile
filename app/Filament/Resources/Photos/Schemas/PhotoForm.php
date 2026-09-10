@@ -14,7 +14,15 @@ class PhotoForm
 {
     public static function configure(Schema $schema): Schema
     {
+        /*
+         | Satu kolom eksplisit di akar, sama seperti form Tulisan dan
+         | Project — supaya tata letaknya tidak bergantung pada default
+         | Filament. Isi Section-nya sendiri sudah wajar sejak Fase 4
+         | (gambar dan caption selebar penuh, tanggal dan urutan
+         | berpasangan) jadi tidak diubah.
+         */
         return $schema
+            ->columns(1)
             ->components([
                 Section::make()
                     ->schema([

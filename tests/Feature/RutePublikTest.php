@@ -2,8 +2,11 @@
 
 use App\Models\Photo;
 use App\Models\Post;
+use App\Models\Profile;
 use App\Models\Project;
 use App\Models\SiteText;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 /*
  | Smoke test rute publik yang diperkenalkan Fase 1.
@@ -25,6 +28,84 @@ it('mengarahkan panel admin ke halaman login saat belum masuk', function () {
 
 it('membalas 200 pada halaman login admin', function () {
     $this->get('/admin/login')->assertOk();
+});
+
+/*
+ | Rombak panel: satu menu "Beranda" menggantikan Dasbor dan menu
+ | "Teks beranda" yang dulu terpisah. Diminta pemilik — dicek di sini
+ | karena "menu ganda" dan "mendarat di dasbor" adalah kerusakan besar
+ | yang tidak terlihat dari halaman publik mana pun.
+ */
+it('mendaratkan admin yang sudah masuk langsung di halaman Beranda panel', function () {
+    // Hanya akun pemilik yang boleh membuka panel (User::canAccessPanel).
+    $this->actingAs(User::factory()->create(['email' => config('admin.email')]))
+        ->get('/admin')
+        ->assertOk()
+        ->assertSee('Beranda')
+        // Dasbor bawaan tidak lagi terdaftar.
+        ->assertDontSee('Dashboard');
+});
+
+it('tidak lagi punya rute resource teks beranda yang terpisah', function () {
+    expect(Route::has('filament.admin.resources.site-texts.index'))->toBeFalse();
+});
+
+/*
+ | Tautan sosial datang dari tabel `profiles` sejak config/site.php
+ | dipensiunkan. "Tautan kosong tidak dirender" adalah aturan, bukan
+ | tampilan — tombol mati yang mengarah ke mana-mana persis yang ingin
+ | dihindari pemilik.
+ */
+it('merender hanya tautan sosial yang terisi', function () {
+    Profile::ambil()->update([
+        'email' => 'halo@contoh.test',
+        'github' => 'https://github.com/contoh',
+        'linkedin' => null,
+        'tiktok' => null,
+        'instagram' => null,
+        'youtube' => null,
+    ]);
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('mailto:halo@contoh.test', escape: false)
+        ->assertSee('https://github.com/contoh', escape: false)
+        ->assertDontSee('LinkedIn')
+        ->assertDontSee('TikTok')
+        ->assertDontSee('Instagram');
+});
+
+/*
+ | Judul bagian ikut dwibahasa, diminta pemilik — sebelumnya judulnya
+ | tetap Indonesia di mode EN padahal isinya sudah Inggris.
+ */
+it('menerjemahkan judul bagian beranda mengikuti bahasa aktif', function (string $pilihan, string $project, string $tulisan) {
+    Post::create([
+        'judul' => 'Tulisan Dipin', 'slug' => 'tulisan-dipin',
+        'ringkasan' => 'ringkasan', 'konten' => '<p>isi</p>',
+        'status' => 'terbit', 'terbit_pada' => now(), 'dipin' => true,
+    ]);
+
+    Project::create([
+        'nama' => 'Project Dipin', 'ringkasan' => 'ringkasan',
+        'gambar' => ['project/uuid-1/thumb.webp'], 'tahun' => '2026',
+        'dipin' => true, 'urutan' => 1,
+    ]);
+
+    $this->withCookie('bahasa', $pilihan)
+        ->get('/')
+        ->assertOk()
+        ->assertSee($project)
+        ->assertSee($tulisan);
+})->with([
+    ['id', 'Project unggulan', 'Tulisan unggulan'],
+    ['en', 'Selected projects', 'Selected writing'],
+]);
+
+it('menautkan halaman login admin kembali ke situs', function () {
+    $this->get('/admin/login')
+        ->assertOk()
+        ->assertSee(route('beranda'), escape: false);
 });
 
 /*

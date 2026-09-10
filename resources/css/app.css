@@ -272,3 +272,13 @@
         animation-duration: 0.01ms !important;
     }
 }
+@layer base {
+    a:focus-visible, button:focus-visible, [role="button"]:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+        outline: 2px dashed var(--color-ink);
+        outline-offset: 4px;
+    }
+}
+    [data-lightbox-overlay] a:focus-visible, 
+    [data-lightbox-overlay] button:focus-visible {
+        outline-color: var(--color-paper);
+    }

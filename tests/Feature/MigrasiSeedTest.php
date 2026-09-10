@@ -2,6 +2,7 @@
 
 use App\Models\Photo;
 use App\Models\Post;
+use App\Models\Profile;
 use App\Models\Project;
 use App\Models\SiteText;
 use App\Models\User;
@@ -24,6 +25,7 @@ it('menjalankan migrate:fresh --seed sampai bersih dari nol', function () {
 
     expect($kode)->toBe(0);
     expect(User::count())->toBe(1);
+    expect(Profile::count())->toBe(1);
     expect(SiteText::count())->toBe(2);
     expect(Post::count())->toBe(2);
     expect(Project::count())->toBe(2);
