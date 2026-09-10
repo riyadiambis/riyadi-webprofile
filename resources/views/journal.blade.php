@@ -1,7 +1,5 @@
-@extends('layouts.publik')
+@extends('layouts.publik', ['bahasaHalaman' => 'id'])
 
-{{-- Journal tidak ikut dwibahasa, lihat docs/fitur/05-dwibahasa.md. --}}
-@section('lang', 'id')
 
 @section('judul', 'Journal')
 

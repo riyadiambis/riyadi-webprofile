@@ -21,11 +21,11 @@
     aria-label="Tampilan gambar"
     inert
 >
-    <div class="flex h-12 shrink-0 items-center justify-end px-4">
+    <div class="flex h-16 shrink-0 items-center justify-end px-4">
         <button
             type="button"
             data-lightbox-close
-            class="text-3xl leading-none text-paper"
+            class="flex items-center justify-center h-10 w-10 rounded-kecil bg-paper/20 hover:bg-paper/30 text-paper text-2xl leading-none transition-colors"
             aria-label="Tutup gambar"
         >&times;</button>
     </div>
@@ -34,7 +34,7 @@
         <button
             type="button"
             data-lightbox-sebelum
-            class="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-ink/50 px-2 py-1 text-3xl leading-none text-paper md:px-3"
+            class="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center h-10 w-10 rounded-kecil bg-paper/20 hover:bg-paper/30 text-paper text-2xl leading-none transition-colors"
             aria-label="Foto sebelumnya"
             hidden
         >&lsaquo;</button>
@@ -42,7 +42,7 @@
         <button
             type="button"
             data-lightbox-sesudah
-            class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-ink/50 px-2 py-1 text-3xl leading-none text-paper md:px-3"
+            class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center h-10 w-10 rounded-kecil bg-paper/20 hover:bg-paper/30 text-paper text-2xl leading-none transition-colors"
             aria-label="Foto berikutnya"
             hidden
         >&rsaquo;</button>
@@ -53,7 +53,7 @@
              meregangkannya. Div non-replaced diregangkan insets,
              lalu <img> mengisinya dengan h-full w-full dan
              object-contain. --}}
-        <div class="absolute inset-y-0 left-10 right-10 md:left-14 md:right-14">
+        <div class="absolute inset-y-0 left-16 right-16 md:left-20 md:right-20">
             <img
                 data-lightbox-image
                 src="" alt=""
@@ -62,14 +62,14 @@
         </div>
     </div>
 
-    <div class="flex shrink-0 flex-col gap-1 bg-ink/70 px-4 py-2 text-center text-paper">
+    <div class="flex shrink-0 flex-col gap-3 bg-ink/70 px-4 py-4 items-center text-center text-paper">
         <p data-lightbox-caption class="text-sm" hidden></p>
         <a
             data-lightbox-penuh
             href="#"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-xs underline underline-offset-2"
+            class="inline-flex items-center justify-center h-10 px-4 rounded-kecil bg-paper/20 hover:bg-paper/30 text-paper text-sm font-semibold transition-colors"
         >Buka ukuran penuh</a>
     </div>
 </div>

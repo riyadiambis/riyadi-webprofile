@@ -4,7 +4,7 @@
             &copy; {{ date('Y') }} Rahmat Riyadi
         </p>
         <p class="label-bagian">
-            Dibangun sendiri, di-hosting sendiri
+            {{ __('footer.dibangun', [], $bahasaHalaman) }}
         </p>
     </div>
 </footer>

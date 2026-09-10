@@ -1,7 +1,5 @@
-@extends('layouts.publik')
+@extends('layouts.publik', ['bahasaHalaman' => 'id'])
 
-{{-- Galeri tidak ikut dwibahasa, lihat docs/fitur/05-dwibahasa.md. --}}
-@section('lang', 'id')
 
 @section('judul', 'Galeri')
 
@@ -32,7 +30,7 @@
                         data-src="{{ $urls['penuh'] }}"
                         data-alt="{{ $photo->caption ?: 'Foto galeri' }}"
                         data-caption="{{ $photo->caption }}"
-                        class="relative aspect-square cursor-zoom-in overflow-hidden"
+                        class="relative aspect-square cursor-zoom-in overflow-hidden transition-opacity hover:opacity-85"
                         aria-label="Perbesar foto"
                     >
                         <img

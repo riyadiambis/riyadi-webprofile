@@ -38,7 +38,7 @@
         <div class="text-center md:text-left">
             <p class="label-bagian">{{ __('beranda.tentang_saya') }}</p>
             <h1 class="font-judul text-4xl md:text-5xl font-semibold mt-3 leading-tight">
-                Rahmat Riyadi
+                <span class="stabilo px-1 -mx-1">Rahmat Riyadi</span>
             </h1>
 
             @if ($perkenalan)
@@ -69,15 +69,15 @@
          bukan tampil sebagai judul dengan slider kosong. --}}
     @if ($projects->isNotEmpty())
         <section class="mt-bagian-hp md:mt-bagian">
-            <div class="flex items-baseline justify-between gap-6">
+            <div class="flex items-end gap-4 mb-8">
                 <div>
                     <p class="label-bagian">{{ __('beranda.unggulan') }}</p>
                     <h2 class="font-judul text-2xl md:text-3xl font-semibold mt-2">{{ __('beranda.project_unggulan') }}</h2>
                 </div>
-                <a href="{{ route('project') }}" class="text-sm font-semibold text-accent-alt hover:underline underline-offset-2 whitespace-nowrap">{{ __('beranda.lihat_semua') }} &rarr;</a>
+                <a href="{{ route('project') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-3 py-1.5 text-sm font-semibold text-accent-alt shadow-offset tekan-hover mb-1 whitespace-nowrap">{{ __('beranda.lihat_semua') }} &rarr;</a>
             </div>
 
-            <x-slider-beranda :label="__('beranda.project_unggulan')" class="mt-8">
+            <x-slider-beranda :label="__('beranda.project_unggulan')">
                 @foreach ($projects as $project)
                     <div class="w-72 md:w-80 shrink-0 snap-start">
                         <x-kartu-project :project="$project" />
@@ -90,15 +90,15 @@
     {{-- Tulisan unggulan --}}
     @if ($posts->isNotEmpty())
         <section class="mt-bagian-hp md:mt-bagian">
-            <div class="flex items-baseline justify-between gap-6">
+            <div class="flex items-end gap-4 mb-8">
                 <div>
                     <p class="label-bagian">{{ __('beranda.unggulan') }}</p>
                     <h2 class="font-judul text-2xl md:text-3xl font-semibold mt-2">{{ __('beranda.tulisan_unggulan') }}</h2>
                 </div>
-                <a href="{{ route('journal') }}" class="text-sm font-semibold text-accent-alt hover:underline underline-offset-2 whitespace-nowrap">{{ __('beranda.lihat_semua') }} &rarr;</a>
+                <a href="{{ route('journal') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-3 py-1.5 text-sm font-semibold text-accent-alt shadow-offset tekan-hover mb-1 whitespace-nowrap">{{ __('beranda.lihat_semua') }} &rarr;</a>
             </div>
 
-            <x-slider-beranda :label="__('beranda.tulisan_unggulan')" class="mt-8">
+            <x-slider-beranda :label="__('beranda.tulisan_unggulan')">
                 @foreach ($posts as $post)
                     <div class="w-72 md:w-80 shrink-0 snap-start">
                         <x-kartu-post :post="$post" />
@@ -113,15 +113,15 @@
          tanpa JavaScript baru. --}}
     @if ($photos->isNotEmpty())
         <section class="mt-bagian-hp md:mt-bagian">
-            <div class="flex items-baseline justify-between gap-6">
+            <div class="flex items-end gap-4 mb-8">
                 <div>
                     <p class="label-bagian">{{ __('beranda.terbaru') }}</p>
                     <h2 class="font-judul text-2xl md:text-3xl font-semibold mt-2">{{ __('beranda.galeri') }}</h2>
                 </div>
-                <a href="{{ route('galeri') }}" class="text-sm font-semibold text-accent-alt hover:underline underline-offset-2 whitespace-nowrap">{{ __('beranda.lihat_semua') }} &rarr;</a>
+                <a href="{{ route('galeri') }}" class="inline-block rounded-kecil border-tegas border-ink bg-card px-3 py-1.5 text-sm font-semibold text-accent-alt shadow-offset tekan-hover mb-1 whitespace-nowrap">{{ __('beranda.lihat_semua') }} &rarr;</a>
             </div>
 
-            <x-slider-beranda :label="__('beranda.galeri')" class="mt-8">
+            <x-slider-beranda :label="__('beranda.galeri')">
                 @foreach ($photos as $index => $photo)
                     @php($urls = $photo->gambarUrls())
 

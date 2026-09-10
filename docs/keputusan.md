@@ -163,3 +163,10 @@ php artisan filament:assets
 **Jebakan yang perlu diketahui.** Properti `protected static string $routePath = '/'` **saja tidak cukup** — Filament membacanya lewat metode statis `getRoutePath(Panel $panel)`, jadi metode itu yang harus di-override, persis seperti yang dilakukan kelas `Dashboard` bawaan. Tanpa override-nya, halaman tetap mendapat slug dari nama kelas (`/admin/beranda`) dan `/admin` hanya mengalihkan ke sana.
 
 **Konsekuensi yang diterima.** Panel tidak punya dasbor sama sekali. Kalau suatu saat butuh widget ringkasan, tempatnya di halaman Beranda ini, bukan dengan menghidupkan lagi Dasbor — dua halaman utama akan mengulang persoalan "dua menu" yang baru saja diselesaikan.
+## Bahasa khusus halaman dibaca dari variabel layout, bukan fungsi dwibahasa
+
+**Keputusan.** Variabel $bahasaHalaman ditentukan satu kali di bagian awal layouts/publik.blade.php, diambil dari properti slot atau fallback ke pp()->getLocale(). <html lang> dan fungsi __() di footer sama-sama membaca variabel ini, sehingga footer akan mengikuti bahasa yang dipaksakan oleh layout (misal id di halaman journal), bukan menebak-nebak locale aplikasi.
+
+**Kenapa.** Keputusan pemilik: penentuan bahasa harus dilakukan di satu titik yang eksplisit di layout, bukan menyembunyikannya sebagai "trik" di dalam pemanggilan fungsi terjemahan.
+
+**Konsekuensi yang diterima.** Setiap halaman yang ingin mengunci bahasanya (seperti /journal dan /galeri) harus melewatkan variabel ini ke layout (@extends('layouts.publik', ['bahasaHalaman' => 'id'])), alih-alih memakai @section('lang', 'id').

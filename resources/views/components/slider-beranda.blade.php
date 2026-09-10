@@ -18,7 +18,7 @@
     <button
         type="button"
         data-slider-kiri
-        class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center rounded-full bg-card border-tegas border-ink shadow-offset w-10 h-10 text-2xl leading-none transition-colors hover:text-accent-alt"
+        class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center rounded-kecil bg-card border-tegas border-ink shadow-offset w-10 h-10 text-2xl leading-none transition-colors hover:text-accent-alt tekan-hover"
         aria-label="Geser ke kiri"
         hidden
     >&lsaquo;</button>
@@ -34,7 +34,7 @@
     <button
         type="button"
         data-slider-kanan
-        class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center rounded-full bg-card border-tegas border-ink shadow-offset w-10 h-10 text-2xl leading-none transition-colors hover:text-accent-alt"
+        class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 items-center justify-center rounded-kecil bg-card border-tegas border-ink shadow-offset w-10 h-10 text-2xl leading-none transition-colors hover:text-accent-alt tekan-hover"
         aria-label="Geser ke kanan"
         hidden
     >&rsaquo;</button>

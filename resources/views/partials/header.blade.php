@@ -50,7 +50,7 @@
             --}}
             <form method="POST" action="{{ route('bahasa') }}" aria-label="Pilihan bahasa">
                 @csrf
-                <div class="relative inline-flex rounded-kecil border-tegas border-ink bg-card p-1">
+                <div class="relative inline-flex rounded-kecil border-tegas border-ink bg-card p-1 shadow-offset tekan">
                     <span
                         aria-hidden="true"
                         @class([
